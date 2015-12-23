@@ -1,12 +1,14 @@
-var bodyParser = require('body-parser');
-var chalk = require('chalk');
-var cookieParser = require('cookie-parser');
-var express = require('express');
-var logger = require('morgan');
-var path = require('path');
+import bodyParser from 'body-parser';
+import chalk from 'chalk';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import logger from 'morgan';
+import path from 'path';
 
-var app = express();
-var config = require('./config');
+import config from './config';
+import userRoutes from './routes/user';
+
+let app = express();
 
 app.set('jwtSecret', config.jwtSecret);
 
@@ -16,7 +18,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
-app.set('port', process.env.PORT || config.port ||  3000);
+app.set('port', process.env.PORT || config.port ||  3030);
+
+// use routes
+app.use('/users', userRoutes);
 
 /*
 *   export express app, listen (start), and close (end)
