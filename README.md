@@ -24,3 +24,5 @@ requires authorization. edit existing user information
 - DEL: */users/:id*
 requires authorization. delete existing user
 
+### Notes ###
+when doing async mocha tests, you need to `catch` expect errors and fire the done() callback to avoid timeouts

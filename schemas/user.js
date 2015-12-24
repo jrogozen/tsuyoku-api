@@ -13,16 +13,21 @@ let UserSchema = new Schema({
     paid: { type: Boolean, default: false },
     api_refresh_token: { type: String },
     fitbit_refresh_token: { type: String },
-    created_at: { type: Date },
-    updated_at: { type: Date }
+    created_at: { type: Number },
+    updated_at: { type: Number }
 });
 
 UserSchema.pre('save', function (next) {
     let user = this;
 
-    let currentDate = new Date();
+    let currentDate = Date.now();
 
     user.updated_at = currentDate;
+
+    // on password change or new user, create a refresh token
+    if (!user.created_at || user.isModified('password')) {
+
+    }
 
     if (!user.created_at) {
         user.created_at = currentDate;
@@ -43,6 +48,10 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
+    if (!candidatePassword || typeof candidatePassword !== 'string' || !cb) {
+        return new Error(errors.notEnoughData);
+    }
+
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
         if (err) return cb(err);
 
@@ -50,7 +59,16 @@ UserSchema.methods.comparePassword = function comparePassword(candidatePassword,
     });
 };
 
-// todo: saveRefreshToken
+// todo: compareRefreshToken
+UserSchema.methods.compareRefreshToken = function compareRefreshToken(refreshToken) {
+    let user = this;
+
+
+    if (!refreshToken) {
+        return new Error(errrors.token);
+    }
+
+};
 
 
 let UserModel = mongoose.model('User', UserSchema)
