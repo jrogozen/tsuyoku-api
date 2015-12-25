@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { createError } from '../utils/error';
 import { errors } from '../constants';
 
 let defaultUser = {
@@ -19,16 +20,16 @@ let userFactory = function userFactory(userDetails) {
     let newUser;
 
     if (!userDetails || Array.isArray(userDetails) || typeof userDetails !== 'object') {
-        return new Error(errors.notEnoughData);
+        return createError(errors.notEnoughData);
     }
 
     if (!userDetails.email || !userDetails.password) {
-        return new Error(errors.notEnoughData);
+        return createError(errors.notEnoughData);
     }
 
     // todo: set more robust password rules
     if (userDetails.password.length < 6) {
-        return new Error(errors.passwordLength);
+        return createError(errors.passwordLength);
     }
 
     defaultKeyArray = _.keys(defaultUser);

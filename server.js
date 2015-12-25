@@ -27,6 +27,20 @@ mongoose.connect(config.db[nodeEnv]);
 // use routes
 app.use('/users', userRoutes);
 
+// error handling
+
+let errorHandler = function errorHandler(err, req, res, next) {
+    res.status(err.status);
+    res.send({
+        success: false,
+        error: err.message
+    });
+}
+
+app.use(errorHandler);
+
+
+
 let listen = function() {
     return new Promise((resolve) => {
         server = app.listen(app.get('port'), () => {
