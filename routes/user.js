@@ -1,8 +1,10 @@
 import express from 'express';
 import mongoose from 'mongoose';
 
+import * as config from '../config';
 import { errors } from '../constants';
 import errorCheck from '../utils/errorCheck';
+import { generateAccessToken, processAccessToken } from '../utils/token';
 import userFactory from '../factories/user.js';
 import UserModel from '../schemas/user';
 
@@ -19,6 +21,8 @@ router.post('/', (req, res) => {
 
     if (!error) {
         UserModel.create(user, (err, u) => {
+            let accessToken;
+
             error = errorCheck(err, error);
 
             if (error) {
@@ -29,10 +33,25 @@ router.post('/', (req, res) => {
             } else {
                 savedUser = u.toObject();
 
+                // append a generated access token
+                accessToken = generateAccessToken(u, config.jwtSecret);
+                error = errorCheck(err, error);
+
+                // todo: better way to consolidate these?
+                if (error) {
+                    res.status(500).send({
+                        success: false,
+                        error: error.message
+                    });
+                }
+
+                savedUser.api_access_token = accessToken;
+
                 // remove sensitive info before returning
                 if (savedUser.password) {
                     delete savedUser['password'];
                 }
+
                 res.json(Object.assign({
                     success: true
                 }, savedUser));

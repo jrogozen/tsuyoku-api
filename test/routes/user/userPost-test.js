@@ -1,16 +1,15 @@
-import { expect, supertest, mongoose, App, listen, close, server, errors, requester } from '../../bootstrapTest';
+import jwt from 'jsonwebtoken';
 
+import * as config from '../../../config';
+import { expect, supertest, mongoose, App, listen, close, server, errors, defaultAccessToken, requester } from '../../bootstrapTest';
 import UserModel from '../../../schemas/user';
 
 describe('POST /users', () => {
     before((done) => {
-        listen()
-            .then(() => {
-                done();
-            });
+        listen().then(() => done());
     });
 
-    it ('should return an error if not enough data', (done) => {
+    it('should return an error if not enough data', (done) => {
         requester
             .post('/users/')
             .send({})
@@ -24,7 +23,7 @@ describe('POST /users', () => {
             });
     });
 
-    it ('should save user to db', (done) => {
+    it('should save user to db', (done) => {
         requester
             .post('/users/')
             .send({
@@ -47,7 +46,7 @@ describe('POST /users', () => {
             });
     });
 
-    it ('should return a user object without password hash', (done) => {
+    it('should return a user object without password hash', (done) => {
         requester
             .post('/users/')
             .send({
@@ -63,6 +62,7 @@ describe('POST /users', () => {
 
                 expect(user.email).to.eq('passwordtest@gmail.com');
                 expect(user.password).to.be.undefined;
+                expect(user.api_refresh_token).to.be.a('string');
                 expect(user.age).to.eq(24);
                 expect(user.weight).to.eq(160);
                 expect(user.created_at).to.not.be.null;
@@ -70,11 +70,32 @@ describe('POST /users', () => {
             });
     });
 
-    xit ('should return a valid a user (api) token', (done) => {
+    it('should return a valid a user (api) token', (done) => {
+        requester
+            .post('/users/')
+            .send({
+                email: 'tokentest@gmail.com',
+                password: '123456'
+            })
+            .expect('Content-type', /json/)
+            .expect(200)
+            .end((err, res) => {
+                let user = res.body;
+                let accessToken = user.api_access_token;
+                let decodedAccessToken;
 
+                expect(accessToken).to.be.a('string');
+
+                decodedAccessToken = jwt.verify(accessToken, config.jwtSecret);
+
+                expect(decodedAccessToken).to.be.an('object');
+                expect(decodedAccessToken.iss).to.eq(defaultAccessToken.issuer);
+                expect(decodedAccessToken.sub).to.eq(user._id);
+                done();
+            })
     });
 
-    it ('should not allow users with duplicate email addresses', (done) => {
+    it('should not allow users with duplicate email addresses', (done) => {
         let userOne = {
             email: 'mahalo@gmail.com',
             password: '123456'
@@ -111,7 +132,7 @@ describe('POST /users', () => {
             });
     });
 
-    it ('should assign correct permissions', (done) => {
+    it('should assign correct permissions', (done) => {
         let newUser = {
             email: 'checkPermissions@gmail.com',
             password: '123456'
@@ -120,7 +141,6 @@ describe('POST /users', () => {
             email: 'jon.rogozen@gmail.com',
             password: '123456'
         };
-
 
         requester
             .post('/users/')

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import promise from 'promise';
 
-import { errors } from '../constants';
+import { errors, defaultAccessToken } from '../constants';
 
 let randomString = function randomString(len) {
     let charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -41,12 +41,12 @@ let generateAccessToken = function generateToken(user, secret) {
     if (!user || (user && !user._id) || !secret) {
         return new Error(errors.token);
     }
-  
-    token = jwt.sign({}, secret, {
-        expiresIn: 1200,
-        issuer: 'tsuyoku-api',
+    
+    tokenInfo = Object.assign({}, defaultAccessToken, {
         subject: user._id
     });
+
+    token = jwt.sign({}, secret, tokenInfo);
 
     return token;
 }
@@ -68,11 +68,12 @@ let processAccessToken = function processAccessToken(accessToken, secret) {
     });
 
     return decodePromise.then((t) => {
-        token = jwt.sign({}, secret, {
-            expiresIn: 1200,
-            issuer: t.iss,
+        let tokenInfo = Object.assign({}, defaultAccessToken, {
             subject: t.sub
         });
+
+        token = jwt.sign({}, secret, tokenInfo);
+
         return token;
     }).catch(() => {
         return new Error(errors.token);

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+
 import { errors } from '../constants';
+import { generateRefreshToken, generateAccessToken, processAccessToken } from '../utils/token';
 
 let Schema = mongoose.Schema;
 
@@ -17,16 +19,17 @@ let UserSchema = new Schema({
     updated_at: { type: Number }
 });
 
-UserSchema.pre('save', function (next) {
+UserSchema.pre('save', function preSave(next) {
     let user = this;
-
     let currentDate = Date.now();
+    let refreshToken;
 
     user.updated_at = currentDate;
 
     // on password change or new user, create a refresh token
     if (!user.created_at || user.isModified('password')) {
-
+        refreshToken = generateRefreshToken(user.device, user._id);
+        user.api_refresh_token = refreshToken;
     }
 
     if (!user.created_at) {
@@ -59,17 +62,21 @@ UserSchema.methods.comparePassword = function comparePassword(candidatePassword,
     });
 };
 
-// todo: compareRefreshToken
-UserSchema.methods.compareRefreshToken = function compareRefreshToken(refreshToken) {
+UserSchema.methods.compareRefreshToken = function compareRefreshToken(refreshToken, secret) {
     let user = this;
 
 
-    if (!refreshToken) {
-        return new Error(errrors.token);
+    if (!refreshToken || typeof refreshToken !== 'string' || !secret || typeof secret !== 'string') {
+        return new Error(errors.token);
     }
 
-};
+    if (refreshToken !== user.api_refresh_token) {
+        return new Error(errors.tokenMismatch);
+    }
 
+    return generateAccessToken(user, secret);
+
+};
 
 let UserModel = mongoose.model('User', UserSchema)
 

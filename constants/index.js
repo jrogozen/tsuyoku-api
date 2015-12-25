@@ -5,7 +5,13 @@ let errors = {
     dbError: 'Error with database transaction.',
     general: 'Failed to complete the request.',
     passwordLength: 'Password must be more than six characters.',
-    token: 'Error validating token.'
+    token: 'Error validating token.',
+    tokenMismatch: 'Provided token does not match database records.'
 };
 
-export { errors };
+let defaultAccessToken = {
+    issuer: 'tsuyoku-api',
+    expiresIn: 1200
+};
+
+export { errors, defaultAccessToken };

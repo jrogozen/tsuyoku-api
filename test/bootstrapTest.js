@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import supertest from 'supertest';
 import mongoose from 'mongoose';
 import { app as App, listen, close, server } from '../server';
-import { errors } from '../constants';
+import { errors, defaultAccessToken } from '../constants';
 
 const requester = supertest.agent('http://localhost:3030');
 
@@ -15,5 +15,6 @@ export {
     close,
     server,
     errors,
+    defaultAccessToken,
     requester
 };
