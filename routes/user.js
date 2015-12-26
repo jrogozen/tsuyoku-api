@@ -49,37 +49,68 @@ router.get('/:id', (req, res, next) => {
     let token = req.body.token || req.params.token || req.headers['x-access-token'];
     let tokenValidation = processAccessToken(token, config.jwtSecret);
 
-    if (errorCheck(tokenValidation)) {
-        return next(errorCheck(tokenValidation));
-    }
+    tokenValidation
+        .then((token) => {
+            UserModel.findOne({_id: userId})
+                .then((u) => {
+                    let foundUser;
 
-    tokenValidation.then((token) => {
-        if (errorCheck(token)) {
-            return next(errorCheck(token), 402);
-        }
+                    if (!u) {
+                        return next(createError(errors.noMatchingRecord, 404));
+                    }
 
-        UserModel.findOne({_id: userId})
-            .then((u) => {
-                let foundUser;
+                    foundUser = u.toObject();
+                    delete foundUser['api_refresh_token'];
 
-                if (!u) {
-                    return next(createError(errors.noMatchingRecord, 404));
-                }
-
-                foundUser = u.toObject();
-                delete foundUser['api_refresh_token'];
-
-                res.status(200).json({
-                    success: true,
-                    data: foundUser
+                    res.status(200).json({
+                        success: true,
+                        data: foundUser
+                    });
+                })
+                .then(null, (err) => {
+                    return next(createError(errors.couldNotProcessRequest, 500));
                 });
+        })
+        .catch((err) => next(err));
+});
+
+router.get('/', (req, res, next) => {
+    let limit = Number(req.query.limit) || 10;
+    let skip = Number(req.query.skip) || 0;
+
+    let token = req.body.token || req.params.token || req.headers['x-access-token'];
+    let tokenValidation = processAccessToken(token, config.jwtSecret);
+
+    tokenValidation
+        .then((token) => {
+            UserModel.count().exec().then((c) => {
+                let count = c;
+
+                UserModel.find().skip(skip).limit(limit).exec()
+                    .then((users) => {
+                        let parsedUsers = users.map((user) => {
+                            let tempUser = user.toObject();
+                            delete tempUser['password'];
+                            delete tempUser['api_refresh_token'];
+
+                            return tempUser;
+                        });
+
+                        res.status(200).json({
+                            success: true,
+                            data: {
+                                users: parsedUsers,
+                                totalUsers: count
+                            }
+                        });
+                    })
+                    .then(null, (err) => {
+                        return next(createError(errors.couldNotProcessRequest, 500));
+                    })
             })
-            .then(null, (err) => {
-                return next(createError(errors.couldNotProcessRequest, 500));
-            });
-    });
 
-
+        })
+        .catch((err) => next(err))
 });
 
 export default router;

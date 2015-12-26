@@ -6,7 +6,7 @@ import UserModel from '../../../schemas/user';
 
 let testUser;
 
- describe('GET /users/:id', () => {
+ describe('/users/:id - GET', () => {
     before((done) => listen().then(() => {
         requester
             .post('/users/')

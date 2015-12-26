@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import promise from 'promise';
 
-import { createError } from '../utils/error';
+import { createError, errorCheck } from '../utils/error';
 import { errors, defaultAccessToken } from '../constants';
 
 let randomString = function randomString(len) {
@@ -13,7 +13,7 @@ let randomString = function randomString(len) {
         rstring += charSet.substring(randomPoz,randomPoz+1);
     }
     return rstring;
-}
+};
 
 let generateRefreshToken = function generateRefreshToken(device, id) {
     let userDevice = device;
@@ -33,7 +33,7 @@ let generateRefreshToken = function generateRefreshToken(device, id) {
     refreshToken = firstRandomString + ';' + userDevice + '-' + id + ';' + secondRandomString;
 
     return refreshToken;
-}
+};
 
 let generateAccessToken = function generateToken(user, secret) {
     let tokenInfo;
@@ -50,38 +50,35 @@ let generateAccessToken = function generateToken(user, secret) {
     token = jwt.sign({}, secret, tokenInfo);
 
     return token;
-}
+};
 
 let processAccessToken = function processAccessToken(accessToken, secret) {
-    let decodePromise;
     let token;
 
-    if (!accessToken || !secret) {
-        return createError(errors.noAuthentication, 402);
-    }
+    return new promise((resolve, reject) => {
+        if (!accessToken || !secret) {
+            reject(createError(errors.noAuthentication, 402));
+        }
 
-    decodePromise = new promise((resolve, reject) => {
         jwt.verify(accessToken, secret, (err, decoded) => {
-            if (err) reject(createError(errors.token, 402));
+            let tokenInfo;
 
-            resolve(decoded);
+            if (err || !decoded) {
+                return reject(createError(errors.token, 402))
+            }
+
+            tokenInfo = Object.assign({}, defaultAccessToken, {
+                subject: decoded.sub
+            });
+
+            token = jwt.sign({}, secret, tokenInfo);
+
+            resolve(token);
         });
-    });
-
-    return decodePromise.then((t) => {
-        let tokenInfo = Object.assign({}, defaultAccessToken, {
-            subject: t.sub
-        });
-
-        token = jwt.sign({}, secret, tokenInfo);
-
-        return token;
-    }).catch((err) => {
-        return err;
-    });
-}
-
-// let attachAccessToken = function attachAccessToken(accessToken)
+    })
+        .then((token) => token)
+        .catch((err) => { throw(err) });
+};
 
 export { generateRefreshToken, generateAccessToken, processAccessToken };
 

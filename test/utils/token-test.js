@@ -76,14 +76,19 @@ describe('Token Util', () => {
     });
 
     describe('processAccessToken', () => {
-        it('should error if no access token or secret', () => {
-            let getToken = processAccessToken();
-            let getTokenTwo = processAccessToken('fakeEncode');
-            let getTokenThree = processAccessToken(null, TEST_SECRET);
+        it('should error if no access token or secret', (done) => {
+            let getToken = processAccessToken().catch((err) => {
+                expect(err.message).to.eq(errors.noAuthentication);
+            });
 
-            expect(getToken.message).to.eq(errors.noAuthentication);
-            expect(getTokenTwo.message).to.eq(errors.noAuthentication);
-            expect(getTokenThree.message).to.eq(errors.noAuthentication);
+            let getTokenTwo = processAccessToken('fakeEncode').catch((err) => {
+                expect(err.message).to.eq(errors.noAuthentication);
+            });
+            
+            let getTokenThree = processAccessToken(null, TEST_SECRET).catch((err) => {
+                expect(err.message).to.eq(errors.noAuthentication);
+                done();
+            });
         });
 
         it('should return a matching new access token', (done) => {
