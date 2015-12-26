@@ -2,13 +2,14 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 import { errors } from '../constants';
+import { createError } from '../utils/error';
 import { generateRefreshToken, generateAccessToken, processAccessToken } from '../utils/token';
 
 let Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     age: { type: Number },
     weight: { type: Number },
     admin: { type: Boolean, default: false },
@@ -20,39 +21,43 @@ let UserSchema = new Schema({
 });
 
 UserSchema.pre('save', function preSave(next) {
-    let user = this;
-    let currentDate = Date.now();
-    let refreshToken;
 
-    user.updated_at = currentDate;
+    // this ensures indexes are built before saving. might be a better way to do this
+    UserModel.ensureIndexes(() => {
+        let user = this;
+        let currentDate = Date.now();
+        let refreshToken;
 
-    // on password change or new user, create a refresh token
-    if (!user.created_at || user.isModified('password')) {
-        refreshToken = generateRefreshToken(user.device, user._id);
-        user.api_refresh_token = refreshToken;
-    }
+        user.updated_at = currentDate;
 
-    if (!user.created_at) {
-        user.created_at = currentDate;
-    }
+        // on password change or new user, create a refresh token
+        if (!user.created_at || user.isModified('password')) {
+            refreshToken = generateRefreshToken(user.device, user._id);
+            user.api_refresh_token = refreshToken;
+        }
 
-    // next if password has not been modified
-    if (!user.isModified('password')) return next();
+        if (!user.created_at) {
+            user.created_at = currentDate;
+        }
 
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) return next(err);
-        bcrypt.hash(user.password, salt, (err, hash) => {
+        // next if password has not been modified
+        if (!user.isModified('password')) return next();
+
+        bcrypt.genSalt(10, (err, salt) => {
             if (err) return next(err);
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                if (err) return next(err);
 
-            user.password = hash;
-            next();
+                user.password = hash;
+                next();
+            });
         });
-    });
+    })
 });
 
 UserSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
     if (!candidatePassword || typeof candidatePassword !== 'string' || !cb) {
-        return new Error(errors.notEnoughData);
+        return createError(errors.notEnoughData);
     }
 
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
@@ -67,11 +72,11 @@ UserSchema.methods.compareRefreshToken = function compareRefreshToken(refreshTok
 
 
     if (!refreshToken || typeof refreshToken !== 'string' || !secret || typeof secret !== 'string') {
-        return new Error(errors.token);
+        return createError(errors.token);
     }
 
     if (refreshToken !== user.api_refresh_token) {
-        return new Error(errors.tokenMismatch);
+        return createError(errors.tokenMismatch, 402);
     }
 
     return generateAccessToken(user, secret);

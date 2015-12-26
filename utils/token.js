@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import promise from 'promise';
 
+import { createError } from '../utils/error';
 import { errors, defaultAccessToken } from '../constants';
 
 let randomString = function randomString(len) {
@@ -22,7 +23,7 @@ let generateRefreshToken = function generateRefreshToken(device, id) {
     }
 
     if (!id) {
-        return new Error(errors.token);
+        return createError(errors.token, 500);
     }
 
     let refreshToken;
@@ -39,7 +40,7 @@ let generateAccessToken = function generateToken(user, secret) {
     let token;
 
     if (!user || (user && !user._id) || !secret) {
-        return new Error(errors.token);
+        return createError(errors.token, 500);
     }
     
     tokenInfo = Object.assign({}, defaultAccessToken, {
@@ -56,12 +57,12 @@ let processAccessToken = function processAccessToken(accessToken, secret) {
     let token;
 
     if (!accessToken || !secret) {
-        return new Error(errors.token);
+        return createError(errors.noAuthentication, 402);
     }
 
     decodePromise = new promise((resolve, reject) => {
         jwt.verify(accessToken, secret, (err, decoded) => {
-            if (err) reject(new Error(errors.token));
+            if (err) reject(createError(errors.token, 402));
 
             resolve(decoded);
         });
@@ -75,10 +76,12 @@ let processAccessToken = function processAccessToken(accessToken, secret) {
         token = jwt.sign({}, secret, tokenInfo);
 
         return token;
-    }).catch(() => {
-        return new Error(errors.token);
+    }).catch((err) => {
+        return err;
     });
 }
+
+// let attachAccessToken = function attachAccessToken(accessToken)
 
 export { generateRefreshToken, generateAccessToken, processAccessToken };
 

@@ -24,5 +24,28 @@ requires authorization. edit existing user information
 - DEL: */users/:id*
 requires authorization. delete existing user
 
+### Format ###
+
+success (200):
+
+{
+    success: true,
+    data: data
+}
+
+fail (40*, 50*):
+
+{
+    success: false,
+    error: message
+}
+
+
 ### Notes ###
-when doing async mocha tests, you need to `catch` expect errors and fire the done() callback to avoid timeouts
+- when doing async mocha tests, you need to `catch` expect errors and fire the done() callback to avoid timeouts
+
+- 404 if a specific id is queried and not found. 200 if query for a list of results and an empty array is returned
+
+- Mongoose re-indexes after creates. you need to ensureIndexes() on the Model to make sure uniques stay unique.
+
+- Only send a new api_access_token on requests that require authorization

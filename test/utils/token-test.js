@@ -81,9 +81,9 @@ describe('Token Util', () => {
             let getTokenTwo = processAccessToken('fakeEncode');
             let getTokenThree = processAccessToken(null, TEST_SECRET);
 
-            expect(getToken.message).to.eq(errors.token);
-            expect(getTokenTwo.message).to.eq(errors.token);
-            expect(getTokenThree.message).to.eq(errors.token);
+            expect(getToken.message).to.eq(errors.noAuthentication);
+            expect(getTokenTwo.message).to.eq(errors.noAuthentication);
+            expect(getTokenThree.message).to.eq(errors.noAuthentication);
         });
 
         it('should return a matching new access token', (done) => {

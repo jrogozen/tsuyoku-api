@@ -6,7 +6,9 @@ let errors = {
     general: 'Failed to complete the request.',
     passwordLength: 'Password must be more than six characters.',
     token: 'Error validating token.',
-    tokenMismatch: 'Provided token does not match database records.'
+    tokenMismatch: 'Provided token does not match database records.',
+    noMatchingRecord: 'No matching id found in database records.',
+    couldNotProcessRequest: 'Error processing you request. Check parameters.'
 };
 
 let defaultAccessToken = {

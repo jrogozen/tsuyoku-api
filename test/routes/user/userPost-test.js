@@ -5,9 +5,7 @@ import { expect, supertest, mongoose, App, listen, close, server, errors, defaul
 import UserModel from '../../../schemas/user';
 
 describe('POST /users', () => {
-    before((done) => {
-        listen().then(() => done());
-    });
+    before((done) => listen().then(() => done()));
 
     it('should return an error if not enough data', (done) => {
         requester
@@ -36,10 +34,10 @@ describe('POST /users', () => {
                 expect(err).to.be.null;
                 expect(res.body.success).to.equal(true);
                 UserModel.findOne({
-                    email: res.body.email
+                    email: res.body.data.email
                 }).exec((err, foundUser) => {
                     expect(err).to.be.null;
-                    expect(foundUser.email).to.eq(res.body.email);
+                    expect(foundUser.email).to.eq(res.body.data.email);
                     expect(foundUser.password).to.not.be.null;
                     done();
                 });
@@ -58,7 +56,7 @@ describe('POST /users', () => {
             .expect('Content-type', /json/)
             .expect(200)
             .end((err, res) => {
-                let user = res.body;
+                let user = res.body.data;
 
                 expect(user.email).to.eq('passwordtest@gmail.com');
                 expect(user.password).to.be.undefined;
@@ -80,7 +78,7 @@ describe('POST /users', () => {
             .expect('Content-type', /json/)
             .expect(200)
             .end((err, res) => {
-                let user = res.body;
+                let user = res.body.data;
                 let accessToken = user.api_access_token;
                 let decodedAccessToken;
 
@@ -97,12 +95,12 @@ describe('POST /users', () => {
 
     it('should not allow users with duplicate email addresses', (done) => {
         let userOne = {
-            email: 'mahalo@gmail.com',
+            email: 'mahalosix@gmail.com',
             password: '123456'
         };
         let userTwo = {
-            email: 'mahalo@gmail.com',
-            password: '123456'
+            email: 'mahalosix@gmail.com',
+            password: '654321'
         };
 
         requester
@@ -111,7 +109,7 @@ describe('POST /users', () => {
             .expect(200)
             .expect('Content-type', /json/)
             .end((err, res) => {
-                expect(res.body.email).to.eq('mahalo@gmail.com')
+                expect(res.body.data.email).to.eq('mahalosix@gmail.com');
 
                 requester
                     .post('/users/')
@@ -122,7 +120,7 @@ describe('POST /users', () => {
                         expect(res.body.success).to.be.false;
                         expect(res.body.error).to.eq(errors.dbError);
                         
-                        UserModel.find({ email: 'mahalo@gmail.com' })
+                        UserModel.find({ email: 'mahalosix@gmail.com' })
                             .exec((err, result) => {
                                 expect(err).to.be.null;
                                 expect(result.length).to.eq(1);
@@ -148,7 +146,7 @@ describe('POST /users', () => {
             .expect('Content-type', /json/)
             .expect(200)
             .end((err, res) => {
-                let u = res.body;
+                let u = res.body.data;
 
                 expect(u.admin).to.be.false;
                 expect(u.paid).to.be.false;
@@ -160,7 +158,7 @@ describe('POST /users', () => {
                     .expect('Content-type', /json/)
                     .expect(200)
                     .end((err, res) => {
-                        let u = res.body;
+                        let u = res.body.data;
 
                         expect(err).to.be.null;
                         expect(u.admin).to.be.true;

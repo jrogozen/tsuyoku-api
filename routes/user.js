@@ -10,8 +10,6 @@ import UserModel from '../schemas/user';
 
 let router = express.Router();
 
-
-
 router.post('/', (req, res, next) => {
     let user;
     let savedUser;
@@ -32,20 +30,56 @@ router.post('/', (req, res, next) => {
 
         savedUser = u.toObject();
 
+        delete savedUser['password'];
+
         // append a generated access token
         accessToken = generateAccessToken(u, config.jwtSecret);
 
         savedUser.api_access_token = accessToken;
 
-        // remove sensitive info before returning
-        if (savedUser.password) {
-            delete savedUser['password'];
+        res.json({
+            success: true,
+            data: savedUser
+        });
+    });
+});
+
+router.get('/:id', (req, res, next) => {
+    let userId = req.params.id;
+    let token = req.body.token || req.params.token || req.headers['x-access-token'];
+    let tokenValidation = processAccessToken(token, config.jwtSecret);
+
+    if (errorCheck(tokenValidation)) {
+        return next(errorCheck(tokenValidation));
+    }
+
+    tokenValidation.then((token) => {
+        if (errorCheck(token)) {
+            return next(errorCheck(token), 402);
         }
 
-        res.json(Object.assign({
-            success: true
-        }, savedUser));
+        UserModel.findOne({_id: userId})
+            .then((u) => {
+                let foundUser;
+
+                if (!u) {
+                    return next(createError(errors.noMatchingRecord, 404));
+                }
+
+                foundUser = u.toObject();
+                delete foundUser['api_refresh_token'];
+
+                res.status(200).json({
+                    success: true,
+                    data: foundUser
+                });
+            })
+            .then(null, (err) => {
+                return next(createError(errors.couldNotProcessRequest, 500));
+            });
     });
+
+
 });
 
 export default router;

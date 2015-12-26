@@ -28,7 +28,6 @@ mongoose.connect(config.db[nodeEnv]);
 app.use('/users', userRoutes);
 
 // error handling
-
 let errorHandler = function errorHandler(err, req, res, next) {
     res.status(err.status);
     res.send({
@@ -38,8 +37,6 @@ let errorHandler = function errorHandler(err, req, res, next) {
 }
 
 app.use(errorHandler);
-
-
 
 let listen = function() {
     return new Promise((resolve) => {
