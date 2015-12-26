@@ -9,13 +9,13 @@ Authorization is defined as (admin || userMakingRequest === userBeingQueried)
 
 #### User ####
 
-- GET: */users/:id*
+- [x] GET: */users/:id*
 fetch user by id
 
 - GET: */users* 
 fetch a list of all users
 
-- POST: */users*
+- [x] POST: */users*
 create a new user and return
 
 - PUT: */users/:id*
@@ -26,19 +26,23 @@ requires authorization. delete existing user
 
 ### Format ###
 
-success (200):
+`success (200)`
 
+```
 {
     success: true,
     data: data
 }
+```
 
-fail (40*, 50*):
+`fail (400, 500)`
 
+```
 {
     success: false,
     error: message
 }
+```
 
 
 ### Notes ###
