@@ -30,6 +30,7 @@ app.use('/users', userRoutes);
 // error handling
 let errorHandler = function errorHandler(err, req, res, next) {
     res.status(err.status);
+    console.log('ERROR HANDLING!!!', err.message)
     res.send({
         success: false,
         error: err.message

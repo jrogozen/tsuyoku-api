@@ -44,7 +44,7 @@ describe('Token Util', () => {
     describe('generateAccessToken', () => {
         it('should error when no user or secret', () => {
             let getToken = generateAccessToken();
-            let getTokenTwo = generateAccessToken({email: 'jon'}, TEST_SECRET);
+            let getTokenTwo = generateAccessToken(null, TEST_SECRET);
 
             expect(getToken.message).to.eq(errors.token);
             expect(getToken.name).to.eq('Error');
@@ -53,14 +53,14 @@ describe('Token Util', () => {
         });
 
         it('should return an encoded token', () => {
-            let getToken = generateAccessToken({_id: '1241021'}, TEST_SECRET);
+            let getToken = generateAccessToken('1241021', TEST_SECRET);
 
             expect(getToken).to.be.a('string');
             expect(getToken).to.have.length.above(100);
         });
 
         it('decoded token should have correct body', (done) => {
-            let getToken = generateAccessToken({_id: '15'}, TEST_SECRET);
+            let getToken = generateAccessToken('15', TEST_SECRET);
 
             jwt.verify(getToken, TEST_SECRET, (err, decoded) => {
                 let expTime = decoded.exp - decoded.iat;
@@ -94,7 +94,7 @@ describe('Token Util', () => {
         it('should return a matching new access token', (done) => {
             let newToken;
             let decodedNew;
-            let originalToken = generateAccessToken({_id: '123'}, TEST_SECRET);
+            let originalToken = generateAccessToken('123', TEST_SECRET);
             let decodedOriginal = jwt.verify(originalToken, TEST_SECRET);
             
             setTimeout(() => {

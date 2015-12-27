@@ -50,4 +50,29 @@ let userFactory = function userFactory(userDetails) {
     return newUser;
 };
 
+// todo: test
+let updateUserFactory = function updateUserFactory(userDetails) {
+    let newUser;
+    let defaultKeyArray;
+
+    if (!userDetails || Array.isArray(userDetails) || typeof userDetails !== 'object') {
+        return createError(errors.notEnoughData);
+    }
+
+    // todo: extract validation into util
+    if (userDetails.password.length < 6) {
+        return createError(errors.passwordLength);
+    }
+
+    defaultKeyArray = _.keys(defaultUser);
+
+    _.forEach(userDetails, (v,k) => {
+        if (defaultKeyArray.indexOf(k) < 0) {
+            delete userDetails[k];
+        }
+    });
+
+    return Object.assign({}, userDetails);
+};
+
 export default userFactory;

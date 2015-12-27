@@ -120,6 +120,24 @@ let testUser;
             });
     });
 
+    it('should return a new access token', (done) => {
+        setTimeout(() => {
+            requester
+                .get('/users/' + testUser._id)
+                .set('x-access-token', testUser.api_access_token)
+                .expect('Content-type', /json/)
+                .expect(200)
+                .end((err, res) => {
+                    let body = res.body;
+
+                    expect(err).to.be.null;
+                    expect(body.api_access_token).to.be.a('string');
+                    expect(body.api_access_token).to.not.eq(testUser.api_access_token);
+                    done();
+                });
+        }, 1000);
+    });
+
     after((done) => {
         testUser = null;
         mongoose.connection.db.dropDatabase();

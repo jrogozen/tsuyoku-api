@@ -70,7 +70,6 @@ UserSchema.methods.comparePassword = function comparePassword(candidatePassword,
 UserSchema.methods.compareRefreshToken = function compareRefreshToken(refreshToken, secret) {
     let user = this;
 
-
     if (!refreshToken || typeof refreshToken !== 'string' || !secret || typeof secret !== 'string') {
         return createError(errors.token);
     }
@@ -79,8 +78,7 @@ UserSchema.methods.compareRefreshToken = function compareRefreshToken(refreshTok
         return createError(errors.tokenMismatch, 402);
     }
 
-    return generateAccessToken(user, secret);
-
+    return generateAccessToken(user._id, secret);
 };
 
 let UserModel = mongoose.model('User', UserSchema)

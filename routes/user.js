@@ -33,7 +33,7 @@ router.post('/', (req, res, next) => {
         delete savedUser['password'];
 
         // append a generated access token
-        accessToken = generateAccessToken(u, config.jwtSecret);
+        accessToken = generateAccessToken(u._id, config.jwtSecret);
 
         savedUser.api_access_token = accessToken;
 
@@ -64,7 +64,8 @@ router.get('/:id', (req, res, next) => {
 
                     res.status(200).json({
                         success: true,
-                        data: foundUser
+                        data: foundUser,
+                        api_access_token: token
                     });
                 })
                 .then(null, (err) => {
@@ -77,7 +78,6 @@ router.get('/:id', (req, res, next) => {
 router.get('/', (req, res, next) => {
     let limit = Number(req.query.limit) || 10;
     let skip = Number(req.query.skip) || 0;
-
     let token = req.body.token || req.params.token || req.headers['x-access-token'];
     let tokenValidation = processAccessToken(token, config.jwtSecret);
 
@@ -100,8 +100,9 @@ router.get('/', (req, res, next) => {
                             success: true,
                             data: {
                                 users: parsedUsers,
-                                totalUsers: count
-                            }
+                                totalUsers: count,
+                            },
+                            api_access_token: token
                         });
                     })
                     .then(null, (err) => {
@@ -111,6 +112,17 @@ router.get('/', (req, res, next) => {
 
         })
         .catch((err) => next(err))
+});
+
+router.put('/:id', (req, res, next) => {
+    let token = req.body.token || req.params.token || req.headers['x-access-token'];
+    let tokenValidation = processAccessToken(token, config.jwtSecret);
+
+    tokenValidation
+        .then((token) => {
+
+        })
+        .catch((err) => next(err));
 });
 
 export default router;

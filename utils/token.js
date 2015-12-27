@@ -35,16 +35,16 @@ let generateRefreshToken = function generateRefreshToken(device, id) {
     return refreshToken;
 };
 
-let generateAccessToken = function generateToken(user, secret) {
+let generateAccessToken = function generateToken(id, secret) {
     let tokenInfo;
     let token;
 
-    if (!user || (user && !user._id) || !secret) {
+    if (!id || !secret) {
         return createError(errors.token, 500);
     }
     
     tokenInfo = Object.assign({}, defaultAccessToken, {
-        subject: user._id
+        subject: id
     });
 
     token = jwt.sign({}, secret, tokenInfo);

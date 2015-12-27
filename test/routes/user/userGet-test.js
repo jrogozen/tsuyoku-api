@@ -131,6 +131,25 @@ describe('/users - GET', () => {
                 });
     });
 
+    // timeouts ensure a new token is signed
+    it('response should include a new access token', (done) => {
+        setTimeout(() => {
+            requester
+                .get('/users/')
+                .set('x-access-token', testUser.api_access_token)
+                .expect(200)
+                .expect('Content-type', /json/)
+                .end((err, res) => {
+                    let body = res.body;
+
+                    expect(err).to.be.null;
+                    expect(body.api_access_token).to.be.a('string');
+                    expect(body.api_access_token).to.not.eq(testUser.api_access_token);
+                    done();
+                });
+        }, 1000)
+    });
+
     after((done) => {
         testUser = null;
         mongoose.connection.db.dropDatabase();
