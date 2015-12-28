@@ -15,11 +15,11 @@ let defaultUser = {
     fitbit_refresh_token: null
 };
 
-let userFactory = function userFactory(userDetails) {
+let userFactory = function userFactory(userDetails, isAdmin) {
     let defaultKeyArray;
     let newUser;
 
-    if (!userDetails || Array.isArray(userDetails) || typeof userDetails !== 'object') {
+    if (!userDetails || Array.isArray(userDetails) || typeof userDetails !== 'object' || _.isEmpty(userDetails)) {
         return createError(errors.notEnoughData);
     }
 
@@ -35,7 +35,7 @@ let userFactory = function userFactory(userDetails) {
     defaultKeyArray = _.keys(defaultUser);
 
     _.forEach(userDetails, (v,k) => {
-        if (defaultKeyArray.indexOf(k) < 0) {
+        if (defaultKeyArray.indexOf(k) < 0 || (!isAdmin && (k === 'admin' || k === 'paid'))) {
             delete userDetails[k];
         }
     });
@@ -50,24 +50,29 @@ let userFactory = function userFactory(userDetails) {
     return newUser;
 };
 
-// todo: test
-let updateUserFactory = function updateUserFactory(userDetails) {
+let updateUserFactory = function updateUserFactory(userDetails, isAdmin) {
     let newUser;
     let defaultKeyArray;
 
-    if (!userDetails || Array.isArray(userDetails) || typeof userDetails !== 'object') {
+    if (!userDetails || Array.isArray(userDetails) || typeof userDetails !== 'object' || _.isEmpty(userDetails)) {
         return createError(errors.notEnoughData);
     }
 
     // todo: extract validation into util
-    if (userDetails.password.length < 6) {
+    if (userDetails.password && userDetails.password.length < 6) {
         return createError(errors.passwordLength);
+    }
+
+    // do not let someone becoem me :).
+    // should not allow it on mongoose side either (unique emails)
+    if (userDetails.email && userDetails.email === 'jon.rogozen@gmail.com') {
+        return createError(errors.noAuthorization, 402);
     }
 
     defaultKeyArray = _.keys(defaultUser);
 
     _.forEach(userDetails, (v,k) => {
-        if (defaultKeyArray.indexOf(k) < 0) {
+        if (defaultKeyArray.indexOf(k) < 0 || (!isAdmin && (k === 'admin' || k === 'paid'))) {
             delete userDetails[k];
         }
     });
@@ -75,4 +80,4 @@ let updateUserFactory = function updateUserFactory(userDetails) {
     return Object.assign({}, userDetails);
 };
 
-export default userFactory;
+export { userFactory, updateUserFactory };

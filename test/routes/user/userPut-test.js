@@ -5,15 +5,22 @@ import { expect, supertest, mongoose, App, listen, close, server, errors, defaul
 import UserModel from '../../../schemas/user';
 
 let testUser;
+let testUser2;
 
-describe.only('/users/:userId - PUT', () => {
+describe('/users/:userId - PUT', () => {
     before((done) => listen().then(() => {
         requester
             .post('/users/')
             .send({ email: 'mahalo@gmail.com', password: '123456' })
             .end((err, res) => {
                 testUser = res.body.data;
-                done();
+                requester
+                    .post('/users/')
+                    .send({ email: 'mahalosixer@gmail.com', password: '654321' })
+                    .end((err, res) => {
+                        testUser2 = res.body.data;
+                        done();
+                    })
             });
     }));
 
@@ -41,23 +48,75 @@ describe.only('/users/:userId - PUT', () => {
                 let body = res.body;
 
                 expect(err).to.be.null
-                expect(body).success.to.be.false;
+                expect(body.success).to.be.false;
                 expect(body.error).to.eq(errors.notEnoughData);
                 done();
             });
-            
     });
 
-    xit('should fail if user is not authorized', () => {
+    it('should fail if user is not authorized', (done) => {
+        requester
+            .put('/users/' + testUser._id)
+            .set('x-access-token', testUser2.api_access_token)
+            .send({age: 15})
+            .expect(402)
+            .end((err, res) => {
+                let body = res.body;
 
+                expect(err).to.be.null
+                expect(body.success).to.be.false;
+                expect(body.error).to.eq(errors.noAuthorization);
+                done();
+            });
     });
 
-    xit('should update the db', () => {
+    it('should fail if no matching id in db', (done) => {
+        let adminUser;
+        let bogusId = String(testUser._id).replace(/\w/g, '1');
 
+        requester
+            .post('/users/')
+            .send({ email: 'jon.rogozen@gmail.com', password: '654321' })
+            .end((err, res) => {
+                adminUser = res.body.data;
+
+                requester
+                    .put('/users/' + bogusId)
+                    .set('x-access-token', adminUser.api_access_token)
+                    .send({ age: 42 })
+                    .expect(404)
+                    .end((err, res) => {
+                        let body = res.body;
+
+                        expect(err).to.be.null;
+                        expect(body.success).to.be.false;
+                        expect(body.error).to.eq(errors.noMatchingRecord);
+                        done();
+                    });
+            });
     });
 
-    xit('should return new user with a new access token', () => {
+    it('should return new user with a new access token', (done) => {
+        setTimeout(() => {
+            requester
+                .put('/users/' + testUser._id)
+                .set('x-access-token', testUser.api_access_token)
+                .send({ age: 42, weight: 160, email: 'poopface@gmail.com' })
+                .expect(200)
+                .end((err, res) => {
+                    let body = res.body;
 
+                    expect(err).to.be.null;
+                    expect(body.success).to.be.true;
+                    expect(body.data).to.be.an('object');
+                    expect(body.data.email).to.eq('poopface@gmail.com');
+                    expect(body.data.age).to.eq(42);
+                    expect(body.data.weight).to.eq(160);
+                    expect(body.api_access_token).to.be.a('string');
+                    expect(body.api_access_token).to.not.eq(testUser.api_access_token);
+                    done();
+                });
+        }, 1000);
     });
 
     after((done) => {

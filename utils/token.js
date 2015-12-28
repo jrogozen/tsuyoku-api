@@ -73,10 +73,13 @@ let processAccessToken = function processAccessToken(accessToken, secret) {
 
             token = jwt.sign({}, secret, tokenInfo);
 
-            resolve(token);
+            resolve({
+                token: token,
+                userId: decoded.sub
+            });
         });
     })
-        .then((token) => token)
+        .then((decoded) => decoded)
         .catch((err) => { throw(err) });
 };
 

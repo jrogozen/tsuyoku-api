@@ -77,15 +77,15 @@ describe('Token Util', () => {
 
     describe('processAccessToken', () => {
         it('should error if no access token or secret', (done) => {
-            let getToken = processAccessToken().catch((err) => {
+            processAccessToken().catch((err) => {
                 expect(err.message).to.eq(errors.noAuthentication);
             });
 
-            let getTokenTwo = processAccessToken('fakeEncode').catch((err) => {
+            processAccessToken('fakeEncode').catch((err) => {
                 expect(err.message).to.eq(errors.noAuthentication);
             });
             
-            let getTokenThree = processAccessToken(null, TEST_SECRET).catch((err) => {
+            processAccessToken(null, TEST_SECRET).catch((err) => {
                 expect(err.message).to.eq(errors.noAuthentication);
                 done();
             });
@@ -100,7 +100,7 @@ describe('Token Util', () => {
             setTimeout(() => {
                 processAccessToken(originalToken, TEST_SECRET)
                     .then((t) => {
-                        newToken = t;
+                        newToken = t.token;
                         decodedNew = jwt.verify(newToken, TEST_SECRET);
 
                         expect(decodedOriginal.iss).to.eq(decodedNew.iss);
@@ -110,7 +110,18 @@ describe('Token Util', () => {
                         done();
                     });
             }, 1000);
+        });
 
+        it('should return the original user id', (done) => {
+            let originalToken = generateAccessToken('123', TEST_SECRET);
+            
+            processAccessToken(originalToken, TEST_SECRET)
+                .then((t) => {
+                    let newId = t.userId;
+
+                    expect(newId).to.eq('123');
+                    done();
+                });
         });
     });
 });

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import express from 'express';
 import mongoose from 'mongoose';
 
@@ -5,7 +6,8 @@ import * as config from '../config';
 import { errors } from '../constants';
 import { errorCheck, createError } from '../utils/error';
 import { generateAccessToken, processAccessToken } from '../utils/token';
-import userFactory from '../factories/user.js';
+import { userFactory, updateUserFactory } from '../factories/user.js';
+import { authorize } from '../utils/auth';
 import UserModel from '../schemas/user';
 
 let router = express.Router();
@@ -50,7 +52,7 @@ router.get('/:id', (req, res, next) => {
     let tokenValidation = processAccessToken(token, config.jwtSecret);
 
     tokenValidation
-        .then((token) => {
+        .then((decoded) => {
             UserModel.findOne({_id: userId})
                 .then((u) => {
                     let foundUser;
@@ -65,7 +67,7 @@ router.get('/:id', (req, res, next) => {
                     res.status(200).json({
                         success: true,
                         data: foundUser,
-                        api_access_token: token
+                        api_access_token: decoded.token
                     });
                 })
                 .then(null, (err) => {
@@ -82,7 +84,7 @@ router.get('/', (req, res, next) => {
     let tokenValidation = processAccessToken(token, config.jwtSecret);
 
     tokenValidation
-        .then((token) => {
+        .then((decoded) => {
             UserModel.count().exec().then((c) => {
                 let count = c;
 
@@ -102,7 +104,7 @@ router.get('/', (req, res, next) => {
                                 users: parsedUsers,
                                 totalUsers: count,
                             },
-                            api_access_token: token
+                            api_access_token: decoded.token
                         });
                     })
                     .then(null, (err) => {
@@ -115,14 +117,55 @@ router.get('/', (req, res, next) => {
 });
 
 router.put('/:id', (req, res, next) => {
+    let body = req.body;
+    let requestId = req.params.id;
     let token = req.body.token || req.params.token || req.headers['x-access-token'];
     let tokenValidation = processAccessToken(token, config.jwtSecret);
 
     tokenValidation
-        .then((token) => {
+        .then((decoded) => {
+            let user;
+            let authorized = authorize(requestId, decoded.userId);
 
-        })
-        .catch((err) => next(err));
+            authorized.then((auth) => {
+                let updateDetails = updateUserFactory(body);
+
+                if (errorCheck(updateDetails)) {
+                    return next(updateDetails);
+                }
+
+                UserModel.findOne({ _id: requestId })
+                    .then((u) => {
+                        let foundUser;
+
+                        if (!u) {
+                            return next(createError(errors.noMatchingRecord, 404));
+                        }
+
+                        _.forEach(updateDetails, (v, k) => {
+                            u[k] = v;
+                        });
+
+                        u.save()
+                            .then((uu) => {
+                                if (uu) {
+                                    let trimmedUser = Object.assign({}, uu.toObject());
+
+                                    delete trimmedUser['password'];
+                                    delete trimmedUser['api_refresh_token'];
+
+                                    res.status(200).json({
+                                        success: true,
+                                        data: trimmedUser,
+                                        api_access_token: decoded.token
+                                    });
+                                } else {
+                                    next(createError.dbError);
+                                }
+                            });
+                    }).then(null, (err) => createError(errors.dbError));
+            }).catch((err) => next(err));
+        }).catch((err) => next(err));
 });
 
 export default router;
