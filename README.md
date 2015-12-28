@@ -23,7 +23,7 @@ fetch a list of all users. accepts skip/limit
 - [x] POST: */users*
 create a new user and return
 
-- [] PUT: */users/:id*
+- [x] PUT: */users/:id*
 requires authorization. edit existing user information. changing password should reset refresh_token
 
 - [] DEL: */users/:id*

@@ -168,4 +168,25 @@ router.put('/:id', (req, res, next) => {
         }).catch((err) => next(err));
 });
 
+router.delete('/:id', (req, res, next) => {
+    let requestId = req.params.id;
+    let token = req.body.token || req.params.token || req.headers['x-access-token'];
+    let tokenValidation = processAccessToken(token, config.jwtSecret);
+
+    tokenValidation.then((decoded) => {
+        let authorized = authorize(requestId, decoded.userId);
+
+        authorized.then((auth) => {
+            UserModel.remove({ _id: requestId}).then((user) => {
+                res.status(200).json({
+                    success: true,
+                    data: {
+                        _id: requestId
+                    }
+                });
+            }).then(null, (err) => next(createError(errors.dbError)));
+        }).catch((err) => next(err));
+    }).catch((err) => next(err));
+});
+
 export default router;
