@@ -8,6 +8,7 @@ import path from 'path';
 
 import config from './config';
 import userRoutes from './routes/user';
+import workoutRoutes from './routes/workout';
 
 let app = express();
 let server = null;
@@ -26,6 +27,7 @@ mongoose.connect(config.db[nodeEnv]);
 
 // use routes
 app.use('/users', userRoutes);
+app.use('/workouts', workoutRoutes);
 
 // error handling
 let errorHandler = function errorHandler(err, req, res, next) {

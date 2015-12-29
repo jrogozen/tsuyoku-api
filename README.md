@@ -26,7 +26,7 @@ create a new user and return
 - [x] PUT: */users/:id*
 requires authorization. edit existing user information. changing password should reset refresh_token
 
-- [] DEL: */users/:id*
+- [x] DEL: */users/:id*
 requires authorization. delete existing user
 
 ### Workout ###

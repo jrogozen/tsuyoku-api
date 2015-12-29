@@ -110,7 +110,7 @@ describe('User Schema', () => {
             });
         });
 
-        it('should save a created_at and updated_at string on create', () => {
+        it('should save a created_at and updated_at number on create', () => {
             expect(testUser.created_at).to.not.be.null;
             expect(testUser.created_at).to.be.a('number');
             expect(testUser.created_at).to.eq(testUser.updated_at);

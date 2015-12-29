@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import express from 'express';
-import mongoose from 'mongoose';
 
 import * as config from '../config';
 import { errors } from '../constants';
