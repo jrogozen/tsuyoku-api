@@ -75,16 +75,6 @@ requires authorization. delete existing workout
 
 - Only send a new api_access_token on requests that require authorization
 
-1. user makes api call
-2. api call checks access_token.
-3. if expired, api returns boo hoo.
-4. otherwise, api call completes
+- user tries and token is expired and fails, (user logs in and receives a new access token || user has a refresh_token stored in the app and uses that to get a new access token), user tries api call again, token passes, api call succeeds.
 
-1. user makes api call that requires authorization
-2. api call checks access_token.
-3. if access_token is expired, api returns boo hoo
-3. otherwise, api call checks refresh_token vs db refresh_token (refresh_tokens should not be stored in cookies. they are stored at the app level once a user logs in)
-4. api call completes if match, otherwise returns boo hoo.
-
-
-user tries and is expires so fails, ( user logs in and receives a new access token || user has a refresh_token stored in the app and uses that to get a new access token), user tries api call again, token passes, refresh_token matches, api call succeeds. note: if a user is an admin, check the refresh_token provided against that admin id's refresh_token instead.
+- factories clean/validate data (do we have enough data?) before it is is saved by mongoose model, which does pre-save event (hash pw, update timestamps)
