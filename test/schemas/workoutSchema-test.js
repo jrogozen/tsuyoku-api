@@ -14,7 +14,8 @@ describe('Workout Schema', () => {
                     week: 1
                 },
                 lifts: [{ name: 'bench press', weight: [135, 225, 305] }],
-                accessory_lifts: [{ name: 'bench press', weight: [100, 100, 100] }]
+                accessory_lifts: [{ name: 'bench press', weight: [100, 100, 100] }],
+                userId: new mongoose.Types.ObjectId
             }, (err, w) => {
                 testWorkout = w;
                 done();
@@ -27,6 +28,11 @@ describe('Workout Schema', () => {
             expect(testWorkout.updated_at).to.eq(testWorkout.created_at);
         });
 
+        it('should save a userId', () => {
+            expect(testWorkout.userId).to.not.be.null;
+            expect(testWorkout.userId).to.be.an.instanceOf(mongoose.Types.ObjectId);
+        });
+
         it('should not override created_at passed in', (done) => {
             let workout;
 
@@ -37,7 +43,8 @@ describe('Workout Schema', () => {
                 },
                 created_at: 99,
                 lifts: [{ name: 'bench press', weight: [135, 225, 305] }],
-                accessory_lifts: [{ name: 'bench press', weight: [100, 100, 100] }]
+                accessory_lifts: [{ name: 'bench press', weight: [100, 100, 100] }],
+                userId: new mongoose.Types.ObjectId
             }, (err, w) => {
                 workout = w;
 

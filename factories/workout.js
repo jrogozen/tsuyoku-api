@@ -10,11 +10,12 @@ let defaultWorkout = {
     routine: null,
     lifts: [],
     accessory_lifts: null,
+    userId: null
 };
 
 let workoutFactory = function workoutFactory(workoutDetails) {
     try {
-        requireObject(workoutDetails, ['lifts', 'routine']);
+        requireObject(workoutDetails, ['lifts', 'routine', 'userId']);
     } catch(err) {
         return err;
     }
@@ -52,4 +53,5 @@ export { workoutFactory };
     ],
     created_at: 11212
     updated_at: 12121,
+    userId: 1
 */

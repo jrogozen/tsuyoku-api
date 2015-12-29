@@ -5,12 +5,35 @@ import { expect, supertest, mongoose, App, listen, close, server, errors, defaul
 import UserModel from '../../../schemas/user';
 import WorkoutModel from '../../../schemas/workout';
 
-describe.only('/workout - POST', () => {
-    before((done) => {
+describe('/workout - POST', () => {
+    before((done) => listen().then(() => done()));
+
+    xit('should error if not enough data', () => {
+
+    });
+
+    xit('should error if no api access token', () => {
+
+    });
+
+    xit('should error if no authorization', () => {
+
+    });
+
+    xit('should save workout to db', () => {
+
+    });
+
+    xit('should return a workout object', () => {
+
+    });
+
+    xit('should return an api token', () => {
 
     });
 
     after((done) => {
-
+        mongoose.connection.db.dropDatabase();
+        close(done);
     });
 });
