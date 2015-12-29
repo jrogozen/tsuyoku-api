@@ -16,18 +16,21 @@ import WorkoutModel from '../schemas/workout';
 let router = express.Router();
 
 router.post('/', (req, res, next) => {
+    let body = req.body;
     let token = req.body.token || req.params.token || req.headers['x-access-token'];
     let tokenValidation = processAccessToken(token, config.jwtSecret);
     let lifts, accessoryLifts, routine, workoutDetails;
 
     try {
-        requireObject(req.body, ['lifts', 'routine', 'userId']);
+        requireObject(body, ['lifts', 'routine', 'userId']);
     } catch(err) {
         next(err);
     }
 
     tokenValidation.then((decoded) => {
-        let authorized = authorize(requestId, decoded.userId);
+        authorize(body.userId, decoded.userId).then((auth) => {
+
+        }).catch((err) => next(err));
 
     }).catch((err) => next(err));
 });
