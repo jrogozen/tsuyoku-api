@@ -20,7 +20,7 @@ let workoutDetails = {
 let testUser;
 let testAdmin;
 
-describe.only('/workout - POST', () => {
+describe('/workout - POST', () => {
     before((done) => listen().then(() => {
         requester.post('/users/')
             .send({ email: 'jon.rogozen@gmail.com', password: '123456' })
@@ -67,7 +67,7 @@ describe.only('/workout - POST', () => {
 
         requester.post('/workouts/')
             .set('x-access-token', testUser.api_access_token)
-            .send(workoutDetails)
+            .send(thisWorkout)
             .expect('Content-type', /json/)
             .expect(402)
             .end((err, res) => {
@@ -78,16 +78,56 @@ describe.only('/workout - POST', () => {
             });
     });
 
-    xit('should save workout to db', () => {
+    it('should save workout to db', (done) => {
+        let workoutId;
+        let thisWorkout = Object.assign({}, workoutDetails);
+        thisWorkout.userId = testUser._id;
 
+        requester.post('/workouts/')
+            .set('x-access-token', testUser.api_access_token)
+            .send(thisWorkout)
+            .expect('Content-type', /json/)
+            .expect(200)
+            .end((err, res) => {
+                workoutId = res.body.data._id;
+                expect(err).to.be.null;
+                expect(res.body.success).to.be.true;
+
+                WorkoutModel.findOne({ _id: workoutId })
+                    .then((w) => {
+                        expect(w).to.not.be.null;
+                        expect(String(w._id)).to.eq(workoutId);
+                        expect(w.lifts).to.be.an('array');
+                        expect(w.accessory_lifts).to.be.an('array');
+                        expect(w.routine).to.be.an('object');
+                        expect(w.routine.name).to.eq(workoutDetails.routine.name);
+                        done();
+                    });
+            })
     });
 
-    xit('should return a workout object', () => {
+    it('should return a workout object w/ api_access_token', (done) => {
+        let workoutId;
+        let thisWorkout = Object.assign({}, workoutDetails);
+        thisWorkout.userId = testUser._id;
 
-    });
+        requester.post('/workouts/')
+            .set('x-access-token', testUser.api_access_token)
+            .send(thisWorkout)
+            .expect('Content-type', /json/)
+            .expect(200)
+            .end((err, res) => {
+                let data = res.body.data;
 
-    xit('should return an api token', () => {
-
+                expect(err).to.be.null;
+                expect(res.body.success).to.be.true;
+                expect(res.body.api_access_token).to.be.a('string');
+                expect(data.lifts).to.be.an('array');
+                expect(data.accessory_lifts).to.be.an('array');
+                expect(data.routine).to.be.an('object');
+                expect(data._id).to.be.a('string');
+                done();
+            });
     });
 
     after((done) => {

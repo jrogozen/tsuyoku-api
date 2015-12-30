@@ -20,7 +20,7 @@ let workoutFactory = function workoutFactory(workoutDetails) {
         return err;
     }
 
-    if (!Array.isArray(workoutDetails.lifts) || !Array.isArray(workoutDetails.accessory_lifts)) {
+    if (!Array.isArray(workoutDetails.lifts) || (workoutDetails.accessory_lifts && !Array.isArray(workoutDetails.accessory_lifts))) {
         return createError(errors.notEnoughData);
     }
 
