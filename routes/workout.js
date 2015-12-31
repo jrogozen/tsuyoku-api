@@ -28,44 +28,7 @@ router.post('/', (req, res, next) => {
 
     tokenValidation.then((decoded) => {
         authorize(body.userId, decoded.userId).then((auth) => {
-            let lift;
-            let accessoryLift;
-            let routine;
-            let processedWorkout;
-            let workout = {};
-
-            // process lifts through factory
-            if (body.lifts.length > 0) {
-                workout.lifts = body.lifts.map((l) => {
-                    lift = liftFactory(l);
-
-                    if (!errorCheck(lift)) {
-                        return lift;
-                    }
-                });
-            }
-
-            // process routine
-            routine = routineFactory(body.routine);
-
-            if (!errorCheck(routine)) {
-                workout.routine = routine;
-            }
-
-            // process accessory_lifts
-            if (body.accessory_lifts && body.accessory_lifts.length > 0) {
-                workout.accessory_lifts = body.accessory_lifts.map((al) => {
-                    accessoryLift = liftFactory(al);
-
-                    if (!errorCheck(accessoryLift)) {
-                        return accessoryLift;
-                    }
-                })
-            }
-
-            workout.userId = body.userId;
-
-            processedWorkout = workoutFactory(workout);
+            let processedWorkout = workoutFactory(body);
 
             if (errorCheck(processedWorkout)) {
                 return next(processedWorkout);
@@ -90,6 +53,34 @@ router.post('/', (req, res, next) => {
             });
         }).catch((err) => next(err));
 
+    }).catch((err) => next(err));
+});
+
+router.get('/:id', (req, res, next) => {
+    let workoutId = req.params.id;
+    let token = req.body.token || req.params.token || req.headers['x-access-token'];
+    let tokenValidation = processAccessToken(token, config.jwtSecret);
+
+    tokenValidation.then((decoded) => {
+        WorkoutModel.findOne({ _id: workoutId })
+            .then((w) => {
+                let foundWorkout;
+
+                if (!w) {
+                    return next(createError(errors.noMatchingRecord, 404));
+                }
+
+                foundWorkout = w.toObject();
+
+                res.status(200).json({
+                    success: true,
+                    data: foundWorkout,
+                    api_access_token: decoded.token
+                });
+
+            }).then(null, (err) => {
+                return next(createError(errors.couldNotProcessRequest, 500));
+            });
     }).catch((err) => next(err));
 });
 

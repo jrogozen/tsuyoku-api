@@ -1,10 +1,10 @@
-import jwt from 'jsonwebtoken';
-
 import * as config from '../../../config';
 import { expect, supertest, mongoose, App, listen, close, server, errors, defaultAccessToken, requester } from '../../bootstrapTest';
 import UserModel from '../../../schemas/user';
 import WorkoutModel from '../../../schemas/workout';
 
+let testUser;
+let testAdmin;
 let workoutDetails = {
     routine: {
         name: '5/3/1',
@@ -17,8 +17,6 @@ let workoutDetails = {
     accessory_lifts: [{ name: 'bench press', weight: [140] }],
     userId: new mongoose.Types.ObjectId
 };
-let testUser;
-let testAdmin;
 
 describe('/workout - POST', () => {
     before((done) => listen().then(() => {

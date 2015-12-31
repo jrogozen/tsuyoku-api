@@ -34,7 +34,7 @@ requires authorization. delete existing user
 - [] GET: */workout/:workoutId*
 fetch specific workout. requires authentication or authorization?
 
-- [] GET: */workout/byEmail?email=email&type=bench_press&limit=1&sort=weight_desc*
+- [] GET: */workout/byUserId&userId=123&type=bench_press&limit=1&sort=weight_desc*
 fetch exercises for a given user. requires authorization. requires email. takes limit, sort (sortby_asc/desc), type.
 
 - [X] POST: */workout*
