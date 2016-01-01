@@ -15,7 +15,6 @@ let WorkoutSchema = new Schema({
         }
     },
     lifts: [{ name: String, weight: Array }],
-    accessory_lifts: [{ name: String, weight: Array }],
     created_at: Number,
     updated_at: Number,
     userId: { type: Schema.Types.ObjectId, required: true }

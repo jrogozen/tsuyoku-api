@@ -31,20 +31,24 @@ requires authorization. delete existing user
 
 ### Workout ###
 
-- [] GET: */workout/:workoutId*
-fetch specific workout. requires authentication or authorization?
+- [X] GET: */workouts/:workoutId*
+fetch specific workout. requires authentication, no authorization
 
-- [] GET: */workout/byUserId&userId=123&type=bench_press&limit=1&sort=weight_desc*
+- [] GET: */workouts/byUser?userId=123&type=bench_press&limit=1&sort=weight_desc*
 fetch exercises for a given user. requires authorization. requires email. takes limit, sort (sortby_asc/desc), type.
 
-- [X] POST: */workout*
+- [] GET: */workouts/byType?
+returns workout defaults based on routine (name, week, options), userId (1 rep maxes)
+
+- [X] POST: */workouts*
 create a new workout. requires authorization.
 
-- [] PUT: */workout/:workoutId*
+- [] PUT: */workouts/:workoutId*
 edit an existing workout. requires authorization
 
-- [] DEL: */workout/:workoutId*
+- [] DEL: */workouts/:workoutId*
 requires authorization. delete existing workout
+
 
 ### Format ###
 
@@ -78,3 +82,25 @@ requires authorization. delete existing workout
 - user tries and token is expired and fails, (user logs in and receives a new access token || user has a refresh_token stored in the app and uses that to get a new access token), user tries api call again, token passes, api call succeeds.
 
 - factories clean/validate data (do we have enough data?) before it is is saved by mongoose model, which does pre-save event (hash pw, update timestamps)
+
+example save for 5/3/1 workout
+
+workout.post({
+    routine: {
+        name: '5/3/1',
+        week: 3,
+        options: {
+            accessory: 'boring but big'
+        }
+    }
+    },
+    lifts: [
+        {name: 'bench press', weight: [150, 150, 150, 150, 150, 170, 170, 170, 190]}
+    ],
+
+    // do we need this in db?
+    accessory_lifts: [
+        {name: 'bench press', weight: [100]}
+    ]
+}
+})

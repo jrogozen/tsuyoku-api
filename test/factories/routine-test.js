@@ -24,7 +24,6 @@ describe('Routine Factory', () => {
 
             expect(routine.name).to.eq('5/3/1');
             expect(routine.week).to.eq(14);
-            expect(routine.options.accessory).to.eq('boring but big');
         });
 
         it('should require an existing routine name', () => {

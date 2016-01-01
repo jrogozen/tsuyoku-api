@@ -27,18 +27,12 @@ describe('Workout Factory', () => {
                     name: 'bench press',
                     weight: [225, 250, 265]
                 }],
-                accessory_lifts: [{
-                    name: 'bench press',
-                    weight: [110, 110, 110, 110, 110, 110]
-                }],
                 userId: new mongoose.Types.ObjectId
             });
 
             expect(workout.routine).to.be.an('object');
             expect(workout.lifts).to.be.an('array');
             expect(workout.lifts.length).to.eq(1);
-            expect(workout.accessory_lifts).to.be.an('array');
-            expect(workout.accessory_lifts.length).to.eq(1);
         });
 
         it('should require lifts and accessory lifts to be arrays', () => {
@@ -53,7 +47,6 @@ describe('Workout Factory', () => {
                 routine: {
                     name: '5/3/1'
                 },
-                accessory_lifts: { name: 'bench press', weight: [100, 150, 0] },
                 userId: new mongoose.Types.ObjectId
             })
 

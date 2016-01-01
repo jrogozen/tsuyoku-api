@@ -14,7 +14,6 @@ describe('Workout Schema', () => {
                     week: 1
                 },
                 lifts: [{ name: 'bench press', weight: [135, 225, 305] }],
-                accessory_lifts: [{ name: 'bench press', weight: [100, 100, 100] }],
                 userId: new mongoose.Types.ObjectId
             }, (err, w) => {
                 testWorkout = w;
@@ -43,7 +42,6 @@ describe('Workout Schema', () => {
                 },
                 created_at: 99,
                 lifts: [{ name: 'bench press', weight: [135, 225, 305] }],
-                accessory_lifts: [{ name: 'bench press', weight: [100, 100, 100] }],
                 userId: new mongoose.Types.ObjectId
             }, (err, w) => {
                 workout = w;

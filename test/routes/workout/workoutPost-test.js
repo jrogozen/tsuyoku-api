@@ -14,7 +14,6 @@ let workoutDetails = {
         }
     },
     lifts: [{ name: 'bench press', weight: [ 115, 115, 115, 115, 115, 225, 225, 225 ] }],
-    accessory_lifts: [{ name: 'bench press', weight: [140] }],
     userId: new mongoose.Types.ObjectId
 };
 
@@ -96,7 +95,6 @@ describe('/workout - POST', () => {
                         expect(w).to.not.be.null;
                         expect(String(w._id)).to.eq(workoutId);
                         expect(w.lifts).to.be.an('array');
-                        expect(w.accessory_lifts).to.be.an('array');
                         expect(w.routine).to.be.an('object');
                         expect(w.routine.name).to.eq(workoutDetails.routine.name);
                         done();
@@ -121,7 +119,6 @@ describe('/workout - POST', () => {
                 expect(res.body.success).to.be.true;
                 expect(res.body.api_access_token).to.be.a('string');
                 expect(data.lifts).to.be.an('array');
-                expect(data.accessory_lifts).to.be.an('array');
                 expect(data.routine).to.be.an('object');
                 expect(data._id).to.be.a('string');
                 done();

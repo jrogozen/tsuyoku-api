@@ -15,11 +15,10 @@ let workoutDetails = {
         }
     },
     lifts: [{ name: 'bench press', weight: [ 115, 115, 115, 115, 115, 225, 225, 225 ] }],
-    accessory_lifts: [{ name: 'bench press', weight: [140] }],
     userId: null
 };
 
-describe('/workout/:id - GET', () => {
+describe('/workouts/:id - GET', () => {
     before((done) => {
         listen().then(() => {
             requester.post('/users/')

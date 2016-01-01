@@ -9,7 +9,6 @@ import { errors } from '../constants';
 let defaultWorkout = {
     routine: null,
     lifts: [],
-    accessory_lifts: null,
     userId: null
 };
 
@@ -23,7 +22,7 @@ let workoutFactory = function workoutFactory(workoutDetails) {
         return err;
     }
 
-    if (!Array.isArray(workoutDetails.lifts) || (workoutDetails.accessory_lifts && !Array.isArray(workoutDetails.accessory_lifts))) {
+    if (!Array.isArray(workoutDetails.lifts)) {
         return createError(errors.notEnoughData);
     }
 
@@ -43,16 +42,6 @@ let workoutFactory = function workoutFactory(workoutDetails) {
         workout.routine = routine;
     }
 
-    if (workoutDetails.accessory_lifts && workoutDetails.accessory_lifts.length > 0) {
-        workout.accessory_lifts = workoutDetails.accessory_lifts.map((al) => {
-            let accessoryLift = liftFactory(al);
-
-            if (!errorCheck(accessoryLift)) {
-                return accessoryLift;
-            }
-        })
-    }
-
     workout.userId = workoutDetails.userId;
 
     return Object.assign({}, defaultWorkout, workout);
@@ -61,28 +50,32 @@ let workoutFactory = function workoutFactory(workoutDetails) {
 export { workoutFactory };
 
 /*
+    the user collection should store options for different routines
+    and the createRoutine route should use that info to construct the "next" workout
+    accessory_lifts don't have to be stored in the db either, they can be extrapolated from 
+    user options and 1rep/max
+
+    there needs to be a 1rep/max stored in user collection. it should be updated at specific week cycles
+    ie: Workout.save() => if routine === 5/3/1 and week % 4 === 0, update 1rep/max
+
     workout is comprised of...
+
     routine: {
-        name: 5/3/1,
-        week: 2,
-        options: {
-            accessory: 'boring but big',
-            deload: true
-        }
+        name: '5/3/1',
+        week: 2
     },
+
     lifts: [
         {
             name: 'bench press',
             weight: [225, 250, 265],
         }
     ],
-    accessory_lifts: [
-        {
-            name: 'bench press',
-            weight: [110, 110, 110, 110, 110]
-        }
-    ],
+    
+
     created_at: 11212
     updated_at: 12121,
-    userId: 1
+    userId: 1,
+    totalWeight: 10240,
 */
+

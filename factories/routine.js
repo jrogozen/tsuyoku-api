@@ -7,26 +7,17 @@ import { errors } from '../constants';
 let routines = {
     '5/3/1': {
         name: '5/3/1',
-        week: 1,
-        options: {
-            accessory: null,
-            deload: true
-        }
+        week: 1
     },
     '3x5': {
         name: '3x5',
-        week: 1,
-        options: {
-
-        }
+        week: 1
     },
     '5x5': {
-        week: 1,
-        options: {
-
-        }
+        week: 1
     },
     'misc': {
+        name: 'misc',
         week: null
     }
 };
@@ -46,8 +37,13 @@ let routineFactory = function routineFactory(routineOptions) {
         return createError(errors.notEnoughData);
     }
 
-    // merge will deep merge options, assign will not
-    return _.merge({}, routines[options.name], options);
+    routine = Object.assign({}, routines[options.name]);
+
+    if (options.week) {
+        routine.week = options.week;
+    }
+
+    return routine;
 };
 
 export { routineFactory };
