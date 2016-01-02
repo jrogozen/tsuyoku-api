@@ -34,11 +34,8 @@ requires authorization. delete existing user
 - [X] GET: */workouts/:workoutId*
 fetch specific workout. requires authentication, no authorization
 
-- [] GET: */workouts/byUser?userId=123&type=bench_press&limit=1&sort=weight_desc*
+- [X] GET: */workouts/byUser?userId=123&routine=5/3/1&type=bench_press&limit=1*
 fetch exercises for a given user. requires authorization. requires email. takes limit, sort (sortby_asc/desc), type.
-
-- [] GET: */workouts/byType?
-returns workout defaults based on routine (name, week, options), userId (1 rep maxes)
 
 - [X] POST: */workouts*
 create a new workout. requires authorization.
@@ -48,6 +45,11 @@ edit an existing workout. requires authorization
 
 - [] DEL: */workouts/:workoutId*
 requires authorization. delete existing workout
+
+### Guide ###
+
+- [] GET: */guide?routineName=5/3/1&lifts=
+returns workout guide based on routine (name, week, options) and 1rep maxes. info should be passed in, is not queried (user agnostic).
 
 
 ### Format ###

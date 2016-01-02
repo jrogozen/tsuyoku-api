@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { requireObject } from '../utils/generic';
 import { liftFactory } from './lift';
 import { routineFactory } from './routine';

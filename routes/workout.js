@@ -78,7 +78,6 @@ router.get('/byUser', (req, res, next) => {
             }).limit(limit).sort('-created_at').exec().then((workouts) => {
                 let filteredWorkouts = [].concat(workouts);
 
-                // filter more!
                 if (filteredWorkouts.length > 0) {
                     if (query.liftName) {
                         filteredWorkouts = filteredWorkouts.filter((w) => {

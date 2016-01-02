@@ -283,7 +283,7 @@ describe('/workouts/byId - GET', () => {
             });
     });
 
-    it('should return workouts with access_token ', (done) => {
+    it('should return an api_access_token ', (done) => {
         requester.get('/workouts/byUser')
             .query({
                 userId: testAdmin._id,
