@@ -1,0 +1,5 @@
+language: javascript
+services:
+    - mongodb
+before_script:
+    - sleep 15
