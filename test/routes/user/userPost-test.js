@@ -51,7 +51,11 @@ describe('POST /users', () => {
                 email: 'passwordtest@gmail.com',
                 password: '123456',
                 age: 24,
-                weight: 160
+                weight: 160,
+                maxes: {
+                    bench_press: 225,
+                    deadlift: 295
+                }
             })
             .expect('Content-type', /json/)
             .expect(200)
@@ -64,6 +68,8 @@ describe('POST /users', () => {
                 expect(user.age).to.eq(24);
                 expect(user.weight).to.eq(160);
                 expect(user.created_at).to.not.be.null;
+                expect(user.maxes.bench_press).to.eq(225);
+                expect(user.maxes.deadlift).to.eq(295);
                 done();
             });
     });

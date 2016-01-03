@@ -24,7 +24,13 @@ describe('/workout - POST', () => {
             .end((err, res) => {
                 testAdmin = res.body.data;
                 requester.post('/users/')
-                    .send({ email: 'mahalo@gmail.com', password: '654321' })
+                    .send({
+                        email: 'mahalo@gmail.com',
+                        password: '654321',
+                        maxes: {
+                            bench_press: 225
+                        }
+                    })
                     .end((err, res) => {
                         testUser = res.body.data;
                         done();

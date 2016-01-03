@@ -12,7 +12,13 @@ let defaultUser = {
     api_token: null,
     api_refresh_token: null,
     fitbit_token: null,
-    fitbit_refresh_token: null
+    fitbit_refresh_token: null,
+    maxes: {
+        bench_press: null,
+        deadlift: null,
+        press: null,
+        squat: null
+    }
 };
 
 let userFactory = function userFactory(userDetails, isAdmin) {

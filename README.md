@@ -48,9 +48,11 @@ requires authorization. delete existing workout
 
 ### Guide ###
 
-- [] GET: */guide?routineName=5/3/1&lifts=
+- [] PUT: */guide
 returns workout guide based on routine (name, week, options) and 1rep maxes. info should be passed in, is not queried (user agnostic).
 
+- [x] 5/3/1
+- [x] 5/3/1 - boring but big
 
 ### Format ###
 

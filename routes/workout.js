@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import express from 'express';
 
 import * as config from '../config';
@@ -6,8 +5,6 @@ import { errors } from '../constants';
 import { errorCheck, createError } from '../utils/error';
 import { generateAccessToken, processAccessToken } from '../utils/token';
 import { workoutFactory } from '../factories/workout';
-import { routineFactory } from '../factories/routine';
-import { liftFactory } from '../factories/lift';
 import { authorize } from '../utils/auth';
 import { requireObject } from '../utils/generic';
 import UserModel from '../schemas/user';

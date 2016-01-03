@@ -16,6 +16,12 @@ let UserSchema = new Schema({
     paid: { type: Boolean, default: false },
     api_refresh_token: { type: String },
     fitbit_refresh_token: { type: String },
+    maxes: {
+        bench_press: { type: Number },
+        deadlift: { type: Number },
+        press: { type: Number },
+        squat: { type: Number }
+    },
     created_at: { type: Number },
     updated_at: { type: Number }
 });
