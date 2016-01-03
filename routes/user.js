@@ -62,7 +62,8 @@ router.get('/:id', (req, res, next) => {
 
                     foundUser = u.toObject();
                     delete foundUser['api_refresh_token'];
-
+                    delete foundUser['password'];
+                    
                     res.status(200).json({
                         success: true,
                         data: foundUser,

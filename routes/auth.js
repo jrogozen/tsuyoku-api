@@ -17,7 +17,7 @@ router.post('/login', (req, res, next) => {
     if (body.email && body.password) {
         UserModel.findOne({ email: body.email }).then((u) => {
             if (!u) {
-                next(createError(errors.noMatchingRecord));
+                next(createError(errors.noMatchingRecord, 404));
             }
 
             u.comparePassword(body.password, (err, isMatch) => {
@@ -39,6 +39,36 @@ router.post('/login', (req, res, next) => {
                     api_access_token: token
                 });
             })
+        }).then(null, (err) => next(createError(err)));
+    } else if (body.api_refresh_token) {
+        try {
+            requireObject(body, ['userId'])
+        } catch(err) {
+            return next(err);
+        }
+
+        UserModel.findOne({ _id: body.userId }).then((u) => {
+            let token;
+            let user;
+
+            if (!u) {
+                return next(createError(errors.noMatchingRecord, 404));
+            }
+
+            token = u.compareRefreshToken(body.api_refresh_token, config.jwtSecret);
+            user = Object.assign({}, u.toObject());
+
+            if (errorCheck(token)) {
+                return next(token);
+            }
+
+            delete user['password'];
+
+            res.status(200).json({
+                success: true,
+                data: user,
+                api_access_token: token
+            });
         }).then(null, (err) => next(createError(err)));
     }
 });

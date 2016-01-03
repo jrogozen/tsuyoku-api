@@ -86,3 +86,11 @@ returns workout guide based on routine (name, week, options) and 1rep maxes. inf
 - user tries and token is expired and fails, (user logs in and receives a new access token || user has a refresh_token stored in the app and uses that to get a new access token), user tries api call again, token passes, api call succeeds.
 
 - factories clean/validate data (do we have enough data?) before it is is saved by mongoose model, which does pre-save event (hash pw, update timestamps)
+
+### Ideas ###
+- add total weight for a workout
+- add total weight lifetime
+- add percentage of weight lifted for a session (client)
+- add calories eaten vs. daily goal )
+- add time required to exercise on treadmill to make up for excess calories eaten (client)
+- add US standards for matching height/weight/sex vs workout PRs. (add archived PRS to user collection)

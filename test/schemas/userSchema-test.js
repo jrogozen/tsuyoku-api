@@ -38,8 +38,8 @@ describe('User Schema', () => {
 
         it('should correctly error if wrong password', (done) => {
             let badCompare = testUser.comparePassword('12345', (err, isMatch) => {
-                expect(err).to.be.null;
-                expect(isMatch).to.be.false;
+                expect(err.message).to.eq(errors.noAuthorization);
+                expect(isMatch).to.eq(undefined);
                 done();
             });
         });
