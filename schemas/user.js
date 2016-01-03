@@ -9,7 +9,7 @@ let Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true, select: false },
+    password: { type: String, required: true },
     age: { type: Number },
     weight: { type: Number },
     admin: { type: Boolean, default: false },
@@ -67,7 +67,7 @@ UserSchema.methods.comparePassword = function comparePassword(candidatePassword,
     }
 
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-        if (err) return cb(err);
+        if (err) return cb(createError(err));
 
         cb(null, isMatch);
     });
