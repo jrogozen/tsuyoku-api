@@ -4,8 +4,10 @@
   "description": "fitness app api",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "test": "NODE_ENV='test' mocha --recursive --compilers js:babel-core/register ./test"
+    "start": "nodemon BUILD='local' index.js",
+    "production": "nodemon index.js",
+    "test": "NODE_ENV='test' BUILD='local' mocha --recursive --compilers js:babel-core/register ./test",
+    "travis": "NODE_ENV='test' mocha --recursive --compilers js:babel-core/register ./test"
   },
   "author": "jon rogozen",
   "license": "UNLICENSED",
