@@ -2,6 +2,8 @@
 
 Tsuyoku is a fitness tracking app that aids in logging gym sessions
 
+[build_status]: https://travis-ci.org/jrogozen/tsuyoku-api.svg?branch=master
+
 ### API Routes ###
 
 ### Auth ##
