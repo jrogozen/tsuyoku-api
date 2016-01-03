@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import util from 'util';
+
 import { errors } from '../constants';
 import { createError } from '../utils/error';
 
@@ -44,14 +46,23 @@ let reduceWeek = function reduceWeek(week) {
     }
 };
 
-let weekToMonth = function weekToMonth(week) {
+let weekToMonth = function weekToMonth(week, recursive) {
     let month = week;
+    let initial = recursive;
 
     if (month < 4) {
-        return week;
+        if (!initial) {
+            return 1;
+        } else {
+            return month;
+        }
     } else {
-        return weekToMonth(Math.ceil(month / 4));
+        return weekToMonth(Math.ceil(month / 4), true);
     }
 };
 
-export { requireObject, repeater, reduceWeek, weekToMonth };
+let inspect = function inspect(obj) {
+    console.log(util.inspect(obj, false, null));
+};
+
+export { requireObject, repeater, reduceWeek, weekToMonth, inspect };

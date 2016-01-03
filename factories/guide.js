@@ -51,7 +51,7 @@ let calculateFiveThreeOne = function calculateFiveThreeOne(options) {
     let weekToAccessory = function weekToAccessory(week, type, reducedMax, accessory) {
         let month = weekToMonth(week);
         let typeDict = {
-            'press': 'chin ups',
+            'press': 'chin-up',
             'deadlift': 'hanging leg raise',
             'bench press': 'dumbbell row',
             'squat': 'leg curl'
@@ -62,7 +62,7 @@ let calculateFiveThreeOne = function calculateFiveThreeOne(options) {
             '3': 0.7
         };
         let accessoryLifts = {};
-        console.log('week to month!', month, week);
+
         if (accessory === 'boring but big') {
             if (week !== 4) {
                 accessoryLifts[type] = {
@@ -77,12 +77,18 @@ let calculateFiveThreeOne = function calculateFiveThreeOne(options) {
             }
 
             accessoryLifts[typeDict[type]] = {
-                sets: [type === 'deadlift' ? repeater(0, 15) : repeater(0, 10)]
+                sets: [
+                    type === 'deadlift' ? repeater(0, 15) : repeater(0, 10),
+                    type === 'deadlift' ? repeater(0, 15) : repeater(0, 10),
+                    type === 'deadlift' ? repeater(0, 15) : repeater(0, 10),
+                    type === 'deadlift' ? repeater(0, 15) : repeater(0, 10),
+                    type === 'deadlift' ? repeater(0, 15) : repeater(0, 10)
+                ]
             };
         }
 
         return accessoryLifts;
-    }
+    };
     
 
     lifts.warmup = [
@@ -154,55 +160,3 @@ let guideFactory = function guideFactory(guideDetails) {
 };
 
 export { guideFactory }
-
-/*
-    guideDetails should ...
-
-    guideDetails: {
-        routine: {
-            name: '5/3/1',
-            week: 5,
-            options: {
-                accessory: 'boring but big',
-                deload: true
-            }
-        },
-        maxes: {
-            'bench press': 315
-        }
-    }
-
-
-    guide: {
-        routine: {
-            name: '5/3/1',
-            week: 3
-        },
-        lifts: {
-            'bench press': {
-                warmups: [
-                    [135, 135, 135],
-                    [165, 165, 165, 165, 165],
-                    [185, 185, 185]
-                ],
-                sets: [
-                    [225, 225, 225, 225, 225],
-                    [250, 250, 250],
-                    [275]
-                ]
-            }
-        },
-        accessoryLifts: {
-            'bench press': {
-                sets: [
-                    [110, 110, 110, 110, 110, 110, 110, 110, 110, 110],
-                    [110, 110, 110, 110, 110, 110, 110, 110, 110, 110],
-                    [110, 110, 110, 110, 110, 110, 110, 110, 110, 110],
-                    [110, 110, 110, 110, 110, 110, 110, 110, 110, 110],
-                    [110, 110, 110, 110, 110, 110, 110, 110, 110, 110]
-                ]
-            }
-        },
-        totalWeight: (110 * 50) + (...),
-    }
-*/

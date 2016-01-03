@@ -1,10 +1,9 @@
-import util from 'util';
-
 import { guideFactory } from '../../factories/guide';
 import { errors } from '../../constants';
+import { inspect } from '../../utils/generic';
 import { expect } from 'chai';
 
-describe.only('Guide Factory', () => {
+describe('Guide Factory', () => {
     describe('guideFactory - 5/3/1', () => {
         it('should return a guide with lifts and routine', () => {
             let guideDetails = {
@@ -77,7 +76,7 @@ describe.only('Guide Factory', () => {
             expect(guide.lifts['bench press'].sets.length).to.eq(0);
         });
 
-        it('should provide accessory lifts when in options', () => {
+        it('should provide boring but big accessory lifts when in options', () => {
             let guideDetails = {
                 routine: {
                     name: '5/3/1',
@@ -88,31 +87,69 @@ describe.only('Guide Factory', () => {
                 },
                 maxes: { 'bench press': 200 },
             };
-
             let guide = guideFactory(guideDetails);
 
-            console.log('guide accessory', util.inspect(guide, false, null));
+            expect(guide.lifts['bench press'].accessoryLifts['bench press'].sets).to.be.an('array');
+            expect(guide.lifts['bench press'].accessoryLifts['bench press'].sets[0][0]).to.eq(90);
+            expect(guide.lifts['bench press'].accessoryLifts['bench press'].sets.length).to.eq(5);
+            expect(guide.lifts['bench press'].accessoryLifts['dumbbell row'].sets.length).to.eq(5);
+            expect(guide.lifts['bench press'].accessoryLifts['dumbbell row'].sets[0][0]).to.eq(0);
         });
 
-        xit('accessory lifts should increment per month', () => {
+        it('boring but big lifts should increment per month', () => {
+            let guideDetails = {
+                routine: {
+                    name: '5/3/1',
+                    week: 5,
+                    options: {
+                        accessory: 'boring but big'
+                    }
+                },
+                maxes: { 'press': 200 },
+            };
+            let guide = guideFactory(guideDetails);
 
+            expect(guide.lifts['press'].accessoryLifts['press'].sets).to.be.an('array');
+            expect(guide.lifts['press'].accessoryLifts['press'].sets[0][0]).to.eq(110);
+            expect(guide.lifts['press'].accessoryLifts['press'].sets.length).to.eq(5);
+            expect(guide.lifts['press'].accessoryLifts['chin-up'].sets.length).to.eq(5);
+            expect(guide.lifts['press'].accessoryLifts['chin-up'].sets[0][0]).to.eq(0);
         });
 
-        xit('accessory lifts should correspond to correct lift type', () => {
+        it('boring but big lifts should correspond to correct lift type', () => {
+            let guideDetails = {
+                routine: {
+                    name: '5/3/1',
+                    week: 2,
+                    options: {
+                        accessory: 'boring but big'
+                    }
+                },
+                maxes: { 'deadlift': 200 },
+            };
+            let guide = guideFactory(guideDetails);
 
+            expect(guide.lifts['deadlift'].accessoryLifts['deadlift'].sets[0][0]).to.eq(90);
+            expect(guide.lifts['deadlift'].accessoryLifts['hanging leg raise'].sets.length).to.eq(5);
+            expect(guide.lifts['deadlift'].accessoryLifts['hanging leg raise'].sets[0].length).to.eq(15);
         });
 
-        xit('should error when not enough data', () => {
-            /*
-                 guideDetails = {
-                    routine: {
-                        name:
-                        week:
-                        options // optional
-                    },
-                    maxes: {}
+        it('should error when not enough data', () => {
+            let noMaxDetails = {
+                routine: {
+                    name: '5/3/1',
+                    week: 2
                 }
-            */
+            };
+            let noRoutineDetails = {
+                maxes: { 'deadlift' : 200 }
+            };
+
+            let noMax = guideFactory(noMaxDetails);
+            let noRoutine = guideFactory(noRoutineDetails);
+
+            expect(noMax.message).to.eq(errors.notEnoughData);
+            expect(noRoutine.message).to.eq(errors.notEnoughData);
         });
     });
 });
