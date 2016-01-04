@@ -1,3 +1,3 @@
 #!/bin/bash
 
-forever stopall 
+sudo forever stopall 
