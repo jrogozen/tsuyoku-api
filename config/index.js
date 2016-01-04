@@ -8,7 +8,8 @@ if (process.env.BUILD === 'local' ) {
         jwtSecret: process.env.JWT_SECRET,
         port: process.env.PORT,
         db: {
-            test: process.env.TEST_DB
+            test: process.env.TEST_DB,
+            production: process.env.PRODUCTION_DB
         }
     }
 }

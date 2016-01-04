@@ -1,0 +1,21 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/tsuyoku-api
+hooks:
+  BeforeInstall:
+    - location: deploy_scripts/beforeInstall.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: deploy_scripts/afterInstall.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: deploy_scripts/applicationStart.sh
+      timeout: 300
+      runas: root
+  ApplicationStop:
+    - location: deploy_scripts/applicationStop.sh
+      timeout: 300

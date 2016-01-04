@@ -48,7 +48,7 @@ let listen = function() {
     return new Promise((resolve) => {
         server = app.listen(app.get('port'), () => {
             if (nodeEnv === 'test') {
-                console.log(chalk.cyan('Express test server started'), config);
+                console.log(chalk.cyan('Express test server started'));
             } else if (nodeEnv === 'development') {
                 console.log(chalk.green('Express dev server listening on port ' + server.address().port));
             } else {
