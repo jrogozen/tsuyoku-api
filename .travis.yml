@@ -1,10 +1,14 @@
 language: node_js
 node_js:
-- "0.11"
+- "4.1"
+sudo: false
 services:
 - mongodb
 before_script:
 - sleep 15
+cache:
+    directories:
+    - node_modules
 env:
   global:
   - secure: BplfFY8RmkIOAfXLo6IDzH68pTvb+5ll13Nid7BS7N3vXaMi09Wbn0t1TVyG+juDRP6BnQUYNox3+5hmn0dNXwQgTJOIdtp9GbzhZgFfT88wPArdQ5xcBtpWRZx0AqIHDyPaLylsX0MGWBZjKMrkzdIh1+uN4cDRjhZMyxc7QFze3zEfgHgE+Yl7y4UyoJ1mSYZZV1Csj/+SEdpGfaJVupWPHy7iZU2SZvVM70TgDWf0rKYGQ8zGJeJ19D7X1fJJTBZNb+cS7UJILgy5/a8LzwGle8WOC3qmajTk4AuGtQb3pVr6C6uP1BEN8UUBHkYnrHI7K3MMJid8FAuIMrkNCOuGVsxA7yk9BKCdDgcXnm3t0PhGLYvEdfVQTDOici6yOiMkLt+FLxq1L7yWyJ2neamLER2rgOlwROHONJ0ZPwQk0YCLcqCxiTATmy5q6D9nKGCQkVZAteqwHUXE9taTHioDaILIk9q2TL5GS21JBi3386dzQduXAfPMtuvTvkSdSXB/dyExyXg6Wf7E0SzfrxOEbiY+7bVvpOcXPZmDJWeBNqP0MQurgGPNQLv3vT/wp+iu1QgAbLSl7Zzc6eLkwdJk766Z1k2FD4fPFeHQ9YlgPy8Sov9Ec+4L/ZTCxkeqvZFhp7pPtSOUvJgsjPTe4UdbgBP5DxwoJNYdgNXPAN0=
