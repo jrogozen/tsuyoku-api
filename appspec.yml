@@ -5,17 +5,17 @@ files:
     destination: /home/ec2-user/tsuyoku-api
 hooks:
   BeforeInstall:
-    - location: deploy_scripts/beforeInstall.sh
+    - location: bin/beforeInstall.sh
       timeout: 300
       runas: root
   AfterInstall:
-    - location: deploy_scripts/afterInstall.sh
+    - location: bin/afterInstall.sh
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: deploy_scripts/applicationStart.sh
+    - location: bin/applicationStart.sh
       timeout: 300
       runas: root
   ApplicationStop:
-    - location: deploy_scripts/applicationStop.sh
+    - location: bin/applicationStop.sh
       timeout: 300
