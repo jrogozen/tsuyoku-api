@@ -5,7 +5,7 @@ import { app as App, listen, close, server } from '../server';
 import { errors, defaultAccessToken } from '../constants';
 import { inspect } from '../utils/generic';
 
-const requester = supertest.agent('http://localhost:3030');
+const requester = supertest.agent('http://localhost:' + App.get('port'));
 
 export {
     expect,
