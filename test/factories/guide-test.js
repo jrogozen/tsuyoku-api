@@ -151,5 +151,9 @@ describe('Guide Factory', () => {
             expect(noMax.message).to.eq(errors.notEnoughData);
             expect(noRoutine.message).to.eq(errors.notEnoughData);
         });
+
+        xit('should return correct total weight (warmups + main lifts + accessory lifts)', () => {
+
+        });
     });
 });

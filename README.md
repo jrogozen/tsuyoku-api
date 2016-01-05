@@ -8,11 +8,8 @@ Tsuyoku is a fitness tracking app that aids in logging gym sessions
 
 ### Auth ##
 
-- [] POST: */login*
-log user in with email, password
-
-- [] POST: */authorize*
-trades a refresh_token for a new access_token
+- [X] POST: */login*
+log user in with email, password ... or api_refresh_token
 
 ### User ###
 

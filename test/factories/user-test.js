@@ -110,5 +110,13 @@ describe('User Factory', () => {
             expect(updatedUser.password).to.eq('654321');
             expect(updatedUser.age).to.eq(25);
         });
+
+        xit('should update user maxes', () => {
+
+        });
+
+        xit('should not update user max for lift that is not implemented', () => {
+
+        });
     });
 });

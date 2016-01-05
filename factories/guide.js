@@ -153,7 +153,7 @@ let guideFactory = function guideFactory(guideDetails) {
 
     let guide = {
         routine: guideDetails.routine,
-        lifts: calculateLifts(guideDetails),
+        lifts: calculateLifts(guideDetails)
     };
 
     return guide;

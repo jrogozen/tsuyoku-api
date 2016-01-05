@@ -55,7 +55,6 @@ let listen = function() {
                 console.log(chalk.red('Express production server listening on port ' + server.address().port));
             }
 
-            // todo: seed db for dev & tests
             resolve();
         });
     });
