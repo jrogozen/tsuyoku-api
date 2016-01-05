@@ -4,8 +4,8 @@
   "description": "fitness app api",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "local-start": "BUILD='local' nodemon index.js",
+    "start": "node index.js",
+    "local-start": "BUILD='local' node index.js",
     "local-test": "NODE_ENV='test' BUILD='local' mocha --recursive --compilers js:babel-core/register ./test",
     "test": "NODE_ENV='test' mocha --recursive --compilers js:babel-core/register ./test"
   },
@@ -32,5 +32,8 @@
     "nodemon": "^1.8.1",
     "promise": "^7.0.4",
     "supertest": "^1.1.0"
+  },
+  "engines": {
+    "node": "5.3.0"
   }
 }

@@ -14,7 +14,7 @@ import authRoutes from './routes/auth';
 
 let app = express();
 let server = null;
-let nodeEnv = process.env.NODE_ENV || 'development';
+let nodeEnv = config.nodeEnv;
 
 app.set('jwtSecret', config.jwtSecret);
 
@@ -22,7 +22,7 @@ app.use(logger('combined'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.set('port', process.env.PORT || config.port ||  3030);
+app.set('port', config.port);
 
 // connect to db
 mongoose.connect(config.db[nodeEnv]);
