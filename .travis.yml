@@ -1,24 +1,31 @@
 language: node_js
 node_js:
-- "4.1"
+- '4.1'
 sudo: false
 services:
 - mongodb
 before_script:
 - sleep 15
 cache:
-    directories:
-    - node_modules
+  directories:
+  - node_modules
 addons:
-    apt:
-        sources:
-            - ubuntu-toolchain-r-test
-        packages:
-            - gcc-4.8
-            - g++-4.8
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
 env:
   global:
   - CXX=g++-4.8
   - secure: BplfFY8RmkIOAfXLo6IDzH68pTvb+5ll13Nid7BS7N3vXaMi09Wbn0t1TVyG+juDRP6BnQUYNox3+5hmn0dNXwQgTJOIdtp9GbzhZgFfT88wPArdQ5xcBtpWRZx0AqIHDyPaLylsX0MGWBZjKMrkzdIh1+uN4cDRjhZMyxc7QFze3zEfgHgE+Yl7y4UyoJ1mSYZZV1Csj/+SEdpGfaJVupWPHy7iZU2SZvVM70TgDWf0rKYGQ8zGJeJ19D7X1fJJTBZNb+cS7UJILgy5/a8LzwGle8WOC3qmajTk4AuGtQb3pVr6C6uP1BEN8UUBHkYnrHI7K3MMJid8FAuIMrkNCOuGVsxA7yk9BKCdDgcXnm3t0PhGLYvEdfVQTDOici6yOiMkLt+FLxq1L7yWyJ2neamLER2rgOlwROHONJ0ZPwQk0YCLcqCxiTATmy5q6D9nKGCQkVZAteqwHUXE9taTHioDaILIk9q2TL5GS21JBi3386dzQduXAfPMtuvTvkSdSXB/dyExyXg6Wf7E0SzfrxOEbiY+7bVvpOcXPZmDJWeBNqP0MQurgGPNQLv3vT/wp+iu1QgAbLSl7Zzc6eLkwdJk766Z1k2FD4fPFeHQ9YlgPy8Sov9Ec+4L/ZTCxkeqvZFhp7pPtSOUvJgsjPTe4UdbgBP5DxwoJNYdgNXPAN0=
   - secure: eX8n8bl3vh7lLYa62blK5Q42NRxdNnw2Zd3JpHNBPkIek9mDeVqewnq2ljy5ngptA2Pif25dg3P7RTOqiFTgy0BfU+1CtRPiuFCDQovP/sRwAr76C4zpx/jTncVg1fYqMkqNG0q/mVALi2sKAy5K2Hnm3GhBwbbuu0Pk59MN3ZulFZK4j76I7lCuNRpmOXpMVGHZWkDBRcf5gcu9iLRs45rrWo1Gj0r59rpZ9YXpyhth1FnoYZ7hgg3Pclg7wQ87uNgA3CORjCLhdOTjhAmLEc8ZPfzBXTxIbNjAWFXyrflYjoDmkL0cMg1EEDxmfFimxCL4btmZvlcxWt2n/qfo+b54OlfFJiKit4/AMKQG3ymWD7rQegRcDaTyqjqjKP0LcAQqXXlHrL37ywgWvezD9jPushI2h2KuZvnf1OSRlcHFYzHyypd9E9HvzlQd1/lYgmRHCFCUtJXIHhmIaOhUyOex8QbmTch17RKfIRZNXIcBZpPu3akE1yXS1BYYEKWaDefCt/mbvaRFm9YdqmfVAkW6CTwGk48zzotj/AfwSEOV6UpeKqlILrLE4GEAJBnmoRxrunO5pbSEh49x73Hby+8quzLc/kBppxDTrLJNvCLV0T/jGwinX/8Cedceo8wcDruB7B+S/0NR/S42xJYayoTKDqhtT0uisVREAzlqotE=
   - secure: LthDOuzbFiRwJwOZWOa22xSW1TR/ebLrlgX/xKz4MLAVhcBmihudwwcIA7+U6AsO9wENwAO9OHjPp6Mv4dwQj6SJFvq6Od/dXTZ6a6HdjFHy3SLDb8MHImaNXB3FlNTmFPDNmvZG8ecA3Eb7PDcs67vKjwkZV1df0SU3oCT9GvQrmYoOZyTQLMdmvLaXqIBt6d4nulf3ZtY+Cc/0jcePT4ZxWLfy0KlRciGtxvNEZCGtJ/RRkk4knjMT1QJVtgzOf7KVyUNztIZtOkU+r4OQEsogYwKkhZu3jF+VXUWqLKcOV9b9jkQZju1vRZQw/T81/7vhjuL2gfw2PJD4wouwEYuNFYEg3ux9KnfHQ7A9py/vRtMF25KId3S1zufUfC1Q64nf4arHx8HBWqP47uCE95Ea1igE8gq/VKQKM/sJBA1BzXRGLRJ/UZDhGyPdBUEE2d6SUk33ymo0Pl8xRdXtAZ8Yb9gvAvzDR00POrLygZwNyiposggp4Vlilw4bmunZ6f1yeFSLeNmkea3NTYvY989pZEdXTqEh2FHUHO3ZkF0zw7Eof6d1cj/gb7Aeu/wQphgpYy/rWsp3RhB5LsLLdPsktH/vFb8Vcz1jn295mNuDn1PbaR8ePhqwAP7AGnv81plsBUgyJx7F4p5EAgYD/S5t6W5YFttRKsZlXxZNzkY=
+deploy:
+  provider: heroku
+  api_key:
+    secure: lc5RyjORpgIyLO2dTYMiFwo3hiebgImuPoBq6xCghrkZv2GXi2MCLQNci9/11Mhx6qTzoB2NyJjfbak17LHAR2HgHoLx80IX+1naRvS8IPer0FGlsTJhiSaapDQhz6BTAHFWH1hXeoS3ks83oNUNbwKgp5hDx6khl+CE8mWp7b+jKwFThfE55cpGe4U/gyaN54lRO7J5+xz0tJnKMOnU1ARsGMJLHkEVM/Vpa/oRzqDuN0Z38eduDoTsKEnSFugxRDVQboE051Sz1OQyznNDewzzBg8vk2gqj3miHtazod4nlA/HKHec5E/K6EBezwWDpsq3lSfV/RKULKz8IfWPaOFI4SHT2hqyqCAduj2uD8SfZZa/qraLvyMlERzGydzgqO2ZfZLNkIUMz4iBoZeAcbI9dLXIVBPGPEHYlHLEN5vismA0O3FWGApppAsRzYKe1R3bFO9ILkVwq6qqkwKsKS0iGeikvD2eb6oUHvDkz9my1Ax6M39Ol5GdIO8z3P2PkKgB2zVSe9uxSulXeFtfSL2HHtF8fTzcviZ+KKS3zC1XppIouUn7eQY2/pFijPf5iuJy+TU0Dmhp807eCeBTCv8wW9fQoSuxT4pp8sXyiSGQ55hSeQ9/zR/W+z9ncCCxZ+5X8PxHnm/NQ7IJEBo9l6ZClm0Cc82nxGXdH8vk/4k=
+  app: tsuyoku-api
+  on:
+    repo: jrogozen/tsuyoku-api
