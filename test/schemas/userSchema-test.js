@@ -61,7 +61,7 @@ describe('User Schema', () => {
             });
         });
 
-        it('should error if no refresh token provided', () => {
+        it('should error if no refresh token provided', (done) => {
             let compare = testUser.compareRefreshToken();
             let compareTwo = testUser.compareRefreshToken('aaa');
 
@@ -69,9 +69,10 @@ describe('User Schema', () => {
             expect(compare.name).to.eq('Error');
             expect(compareTwo.message).to.eq(errors.token);
             expect(compareTwo.name).to.eq('Error');
+            done();
         });
 
-        it('should return a new access token', () => {
+        it('should return a new access token', (done) => {
             let compare = testUser.compareRefreshToken(testUser.api_refresh_token, TEST_SECRET);
             let verifiedToken;
 
@@ -84,13 +85,15 @@ describe('User Schema', () => {
             expect(verifiedToken.iss).to.eq(defaultAccessToken.issuer);
             expect(verifiedToken.sub).to.eq(String(testUser._id));
             expect(verifiedToken.iat).to.not.eq(verifiedToken.exp);
+            done();
         });
 
-        it('should authorization error if token is invalid', () => {
+        it('should authorization error if token is invalid', (done) => {
             let compare = testUser.compareRefreshToken('invalid_refresh_token', TEST_SECRET);
 
             expect(compare.message).to.eq(errors.tokenMismatch);
             expect(compare.name).to.eq('Error');
+            done();
         });
 
         after((done) => {
