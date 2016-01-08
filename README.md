@@ -93,3 +93,5 @@ returns workout guide based on routine (name, week, options) and 1rep maxes. inf
 - add calories eaten vs. daily goal )
 - add time required to exercise on treadmill to make up for excess calories eaten (client)
 - add US standards for matching height/weight/sex vs workout PRs. (add archived PRS to user collection)
+- enable admin setting admin|paid status on other users
+- refactor auth to use middleware :)
