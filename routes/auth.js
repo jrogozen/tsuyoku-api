@@ -70,6 +70,11 @@ router.post('/login', (req, res, next) => {
                 api_access_token: token
             });
         }).then(null, (err) => next(createError(err)));
+    } else {
+        res.status(500).json({
+            success: false,
+            error: createError(errors.notEnoughData)
+        });
     }
 });
 
