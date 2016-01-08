@@ -5,6 +5,7 @@ import express from 'express';
 import logger from 'morgan';
 import mongoose from 'mongoose';
 import path from 'path';
+import cors from 'cors';
 
 import config from './config';
 import userRoutes from './routes/user';
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.set('port', config.port);
+app.use(cors());
 
 // connect to db
 mongoose.connect(config.db[nodeEnv]);
