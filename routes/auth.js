@@ -11,7 +11,8 @@ import UserModel from '../schemas/user';
 let router = express.Router();
 
 router.post('/login', (req, res, next) => {
-    let body = req.body;
+    const token = req.body.token || req.params.token || req.headers['x-access-token'];
+    const body = req.body;
 
     // handle email/pw login
     if (body.email && body.password) {
@@ -42,7 +43,7 @@ router.post('/login', (req, res, next) => {
         }).then(null, (err) => next(createError(err)));
     } else if (body.api_refresh_token) {
         try {
-            requireObject(body, ['userId'])
+            requireObject(body, ['userId']);
         } catch(err) {
             return next(err);
         }
@@ -70,6 +71,30 @@ router.post('/login', (req, res, next) => {
                 api_access_token: token
             });
         }).then(null, (err) => next(createError(err)));
+    } else if (token) {
+        const tokenValidation = processAccessToken(token, config.jwtSecret);
+
+        tokenValidation
+            .then((decoded) => {
+                const userId = decoded.userId;
+
+                UserModel.findOne({ _id: userId }).then((u) => {
+                    if (!u) {
+                        return next(createError(errors.noMatchingRecord, 404));
+                    }
+
+                    const newToken = generateAccessToken(u._id, config.jwtSecret);
+                    const user = Object.assign({}, u.toObject());
+
+                    delete user['password'];
+
+                    res.status(200).json({
+                        success: true,
+                        data: user,
+                        api_access_token: newToken
+                    });
+                });
+            });
     } else {
         res.status(500).json({
             success: false,

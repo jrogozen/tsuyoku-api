@@ -55,6 +55,26 @@ describe('Auth Routes', () => {
                 });
         });
 
+        it.only('should return user info, api_access_token, and refresh_token on api_access_token', (done) => {
+            requester.post('/login')
+                .send({ userId: testUser._id })
+                .set('x-access-token', testUser.api_access_token)
+                .expect(200)
+                .expect('Content-type', /json/)
+                .end((err, res) => {
+                    let data = res.body.data;
+
+                    expect(err).to.be.null;
+                    expect(res.body.success).to.be.true;
+                    expect(res.body.api_access_token).to.be.a('string');
+                    expect(data.api_refresh_token).to.be.a('string');
+                    expect(data.password).to.be.undefined;
+                    expect(data._id).to.eq(testUser._id);
+                    expect(data.email).to.eq(testUser.email);
+                    done();
+                });
+        });
+
         it('should error if refresh_token but no userId', (done) => {
             requester.post('/login')
                 .send({ api_refresh_token: testUser.api_refresh_token })
