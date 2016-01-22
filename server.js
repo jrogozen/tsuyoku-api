@@ -63,9 +63,15 @@ let listen = function() {
 };
 
 let close = function(callback) {
-    if (server) {
-        server.close(callback);
-    }
+    console.log('Shutting down server');
+
+    setTimeout(() => {
+        if (server) {
+            server.close(callback);
+        } else {
+            callback()
+        }
+    }, 250)
 };
 
 export { app, listen, close };

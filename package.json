@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "local-start": "BUILD='local' node index.js",
-    "local-test": "NODE_ENV='test' BUILD='local' mocha --recursive --compilers js:babel-core/register --reporter progress ./test",
+    "local-test": "NODE_ENV='test' BUILD='local' mocha --recursive --compilers js:babel-core/register ./test",
     "test": "NODE_ENV='test' mocha --recursive --compilers js:babel-core/register ./test"
   },
   "author": "jon rogozen",
