@@ -55,9 +55,8 @@ describe('Auth Routes', () => {
                 });
         });
 
-        it.only('should return user info, api_access_token, and refresh_token on api_access_token', (done) => {
+        it('should return user info, api_access_token, and refresh_token on api_access_token', (done) => {
             requester.post('/login')
-                .send({ userId: testUser._id })
                 .set('x-access-token', testUser.api_access_token)
                 .expect(200)
                 .expect('Content-type', /json/)
