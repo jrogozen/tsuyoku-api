@@ -14,7 +14,6 @@ router.post('/login', (req, res, next) => {
     const token = req.body.token || req.params.token || req.headers['x-access-token'];
     const body = req.body;
 
-    // handle email/pw login
     if (body.email && body.password) {
         UserModel.findOne({ email: body.email }).then((u) => {
             if (!u) {
