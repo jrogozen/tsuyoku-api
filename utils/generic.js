@@ -35,15 +35,8 @@ let repeater = function repeater(val, count) {
 };
 
 let reduceWeek = function reduceWeek(week) {
-    if (week % 4 === 0) {
-        return 4;
-    } else if (week % 3 === 0) {
-        return 3;
-    } else if (week % 2 === 0) {
-        return 2;
-    } else {
-        return 1;
-    }
+    // todo: can reduce differently for different workout programs
+    return week % 4;
 };
 
 let weekToMonth = function weekToMonth(week, recursive) {

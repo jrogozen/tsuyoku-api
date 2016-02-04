@@ -58,6 +58,25 @@ describe('Guide Factory', () => {
             expect(guide.lifts['bench press'].sets[2].length).to.eq(1);
         });
 
+        it('should return the correct lifts based on week above 4', () => {
+            let guideDetails = {
+                routine: {
+                    name: '5/3/1',
+                    week: 6
+                },
+                maxes: {
+                    'bench press': 200,
+                }
+            };
+            let guide = guideFactory(guideDetails);
+
+            expect(guide.routine.name).to.eq('5/3/1');
+            expect(guide.lifts['bench press'].warmup[0][0]).to.eq(70);
+            expect(guide.lifts['bench press'].sets[0][1]).to.eq(125);
+            expect(guide.lifts['bench press'].sets[1][2]).to.eq(145);
+            expect(guide.lifts['bench press'].sets[2].length).to.eq(3);
+        });
+
         it('should return no lifts for week 4', () => {
             let guideDetails = {
                 routine: {

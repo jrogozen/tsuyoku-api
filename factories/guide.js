@@ -89,7 +89,6 @@ let calculateFiveThreeOne = function calculateFiveThreeOne(options) {
 
         return accessoryLifts;
     };
-    
 
     lifts.warmup = [
         repeater(reducedMax * warmupDict[0], 5),
