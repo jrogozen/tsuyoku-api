@@ -1,4 +1,6 @@
+import _ from 'lodash';
 import mongoose from 'mongoose';
+import flat from 'flat';
 import bcrypt from 'bcrypt-nodejs';
 
 import { errors } from '../constants';
@@ -57,7 +59,28 @@ UserSchema.pre('save', function preSave(next) {
                 next();
             });
         });
-    })
+    });
+});
+
+UserSchema.pre('findOneAndUpdate', function(next) {
+    this._update = flat(this._update);
+
+    if (_.keys(this._update).indexOf('password') > -1) {
+        const refreshToken = generateRefreshToken(user.device, user._id);
+        this._update.api_refresh_token = refreshToken;
+
+        bcrypt.genSalt(10, (err, salt) => {
+            if (err) return next(err);
+            bcrypt.hash(user.password, salt, null, (err, hash) => {
+                if (err) return next(err);
+
+                this._update.password = hash;
+                next();
+            });
+        });
+    } else {
+        next();
+    }
 });
 
 UserSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {

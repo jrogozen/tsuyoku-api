@@ -25,6 +25,7 @@
     "eslint": "^1.10.3",
     "eslint-plugin-babel": "^3.0.0",
     "express": "^4.13.3",
+    "flat": "^2.0.0",
     "jsonwebtoken": "^5.4.1",
     "lodash": "^3.10.1",
     "mocha": "^2.3.4",

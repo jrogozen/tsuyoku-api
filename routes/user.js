@@ -134,34 +134,22 @@ router.put('/:id', (req, res, next) => {
                     return next(updateDetails);
                 }
 
-                UserModel.findOne({ _id: requestId })
-                    .then((u) => {
-                        let foundUser;
+                UserModel.findOneAndUpdate({ _id: requestId}, updateDetails, { new: true }, function(err, u) {
+                    if (err || !u) {
+                        return next(createError(errors.noMatchingRecord, 404));
+                    }
 
-                        if (!u) {
-                            return next(createError(errors.noMatchingRecord, 404));
-                        }
+                    const trimmedUser = Object.assign({}, u.toObject());
 
-                        u._doc = _.merge({}, u._doc, updateDetails)
+                    delete trimmedUser['password'];
+                    delete trimmedUser['api_refresh_token'];
 
-                        u.save()
-                            .then((uu) => {
-                                if (uu) {
-                                    let trimmedUser = Object.assign({}, uu.toObject());
-
-                                    delete trimmedUser['password'];
-                                    delete trimmedUser['api_refresh_token'];
-
-                                    res.status(200).json({
-                                        success: true,
-                                        data: trimmedUser,
-                                        api_access_token: decoded.token
-                                    });
-                                } else {
-                                    next(createError.dbError);
-                                }
-                            });
-                    }).then(null, (err) => createError(errors.dbError));
+                    res.status(200).json({
+                        success: true,
+                        data: trimmedUser,
+                        api_access_token: decoded.token
+                    });
+                });
             }).catch((err) => next(err));
         }).catch((err) => next(err));
 });

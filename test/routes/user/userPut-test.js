@@ -116,8 +116,22 @@ describe('/users/:userId - PUT', () => {
                 expect(body.data.maxes.squat).to.eq(350);
                 expect(body.data.maxes.deadlift).to.eq(225);
                 expect(body.api_access_token).to.be.a('string');
-                done();
-            })
+
+                requester
+                    .get('/users/' + testUser2._id)
+                    .set('x-access-token', testUser2.api_access_token)
+                    .expect(200)
+                    .end((err, res) => {
+                        const body = res.body;
+
+                        expect(err).to.be.null;
+                        expect(body.data.maxes).to.be.an('object');
+                        expect(body.data.maxes.squat).to.eq(350);
+                        expect(body.data.maxes.deadlift).to.eq(225);
+
+                        done();
+                    });
+            });
     });
 
     it('should return new user with a new access token', (done) => {
