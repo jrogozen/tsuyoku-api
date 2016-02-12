@@ -142,9 +142,7 @@ router.put('/:id', (req, res, next) => {
                             return next(createError(errors.noMatchingRecord, 404));
                         }
 
-                        _.forEach(updateDetails, (v, k) => {
-                            u[k] = v;
-                        });
+                        u._doc = _.merge({}, u._doc, updateDetails)
 
                         u.save()
                             .then((uu) => {

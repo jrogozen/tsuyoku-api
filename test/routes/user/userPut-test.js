@@ -16,7 +16,10 @@ describe('/users/:userId - PUT', () => {
                 testUser = res.body.data;
                 requester
                     .post('/users/')
-                    .send({ email: 'mahalosixer@gmail.com', password: '654321' })
+                    .send({
+                        email: 'mahalosixer@gmail.com', password: '654321',
+                        maxes: { deadlift: 225 }
+                    })
                     .end((err, res) => {
                         testUser2 = res.body.data;
                         done();
@@ -94,6 +97,27 @@ describe('/users/:userId - PUT', () => {
                         done();
                     });
             });
+    });
+
+    it('should work with nested data', (done) => {
+        requester
+            .put('/users/' + testUser2._id)
+            .set('x-access-token', testUser2.api_access_token)
+            .send({ maxes: { squat: 350 }})
+            .expect(200)
+            .end((err, res) => {
+                const body = res.body
+
+                expect(err).to.be.null;
+                expect(body.success).to.be.true;
+                expect(body.data).to.be.an('object');
+                expect(body.data.email).to.eq('mahalosixer@gmail.com');
+                expect(body.data.maxes).to.be.an('object');
+                expect(body.data.maxes.squat).to.eq(350);
+                expect(body.data.maxes.deadlift).to.eq(225);
+                expect(body.api_access_token).to.be.a('string');
+                done();
+            })
     });
 
     it('should return new user with a new access token', (done) => {
